@@ -9,7 +9,9 @@
 CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
 
 CONFIG_ESP32_XTAL_FREQ_AUTO=y
-CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y
+# Partition table is set via platformio.ini's board_build.partitions
+# (partitions.csv) instead of here — CONFIG_PARTITION_TABLE_CUSTOM_FILENAME
+# didn't get honored in this src_dir=main project layout.
 
 # Bluetooh related
 CONFIG_BT_ENABLED=y
@@ -26,6 +28,18 @@ CONFIG_BTDM_CTRL_AUTO_LATENCY=y
 CONFIG_BTDM_CTRL_MODEM_SLEEP=n
 
 CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=y
+
+#
+# WiFi/lwIP: keep this code in flash instead of IRAM.
+# Adding the web control panel (WiFi AP + WebServer) pushed IRAM0 over its
+# fixed-size budget by ~14KB once those symbols actually got linked in.
+# These trade a little WiFi throughput for freeing IRAM — irrelevant for a
+# small local control panel.
+#
+CONFIG_ESP_WIFI_IRAM_OPT=n
+CONFIG_ESP_WIFI_RX_IRAM_OPT=n
+CONFIG_ESP_WIFI_EXTRA_IRAM_OPT=n
+CONFIG_LWIP_IRAM_OPTIMIZATION=n
 
 # MBEDTLS
 CONFIG_MBEDTLS_PSK_MODES=y

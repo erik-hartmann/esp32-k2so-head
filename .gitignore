@@ -2,6 +2,21 @@
 sdkconfig.old
 sdkconfig
 
+# Generated per-environment sdkconfig (PlatformIO writes one per [env:...]).
+# sdkconfig.defaults* is the tracked source of truth; these are derived.
+sdkconfig.*
+!sdkconfig.defaults
+!sdkconfig.defaults.*
+
+# Pulled by the IDF component manager from dependencies.lock -- ~170 MB of
+# third-party source that is reproducible with `idf.py reconfigure`.
+managed_components/
+
+# Windows/pioarduino toolchain quirk: a `-Wl,-Map=` path with backslashes
+# sometimes gets flattened into a garbage filename and dropped in the
+# project root instead of .pio/build/*/firmware.map. Harmless, just clutter.
+Usersehart*.map
+
 # misc
 .pioenvs
 .clang_complete
