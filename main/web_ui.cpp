@@ -12,7 +12,7 @@ namespace {
 
 // Change these if you want a different network name/password. WPA2
 // requires at least 8 characters.
-constexpr const char* kApSsid = "ESP32-LEDs";
+constexpr const char* kApSsid = "k2so-esp32";
 constexpr const char* kApPassword = "ledparty1";
 
 WebServer sServer(80);

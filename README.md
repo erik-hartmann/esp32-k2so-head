@@ -108,7 +108,7 @@ python components/arduino/tools/espota.py -i 192.168.4.1 -p 3232 -f .pio/build/e
 ```
 
 Hold the admin button for a second first to bring the access point up, and
-join `ESP32-LEDs` from the machine doing the upload. The board writes into
+join `k2so-esp32` from the machine doing the upload. The board writes into
 whichever OTA slot it is not currently running from, then reboots into it — so
 a failed or interrupted transfer leaves the working firmware untouched.
 
@@ -178,6 +178,17 @@ gives it 3 MB. Setting this through `board_build.partitions` in
 The soft AP starts **off**. Running it at boot pushed the board into brownout
 over USB. If you make it always-on, redo the power budget in
 [docs/bom.md](docs/bom.md).
+
+**Bluetooth scanning must be paused before WiFi comes up.** The ESP32 has one
+2.4 GHz radio. With no controller paired, Bluepad32 scans continuously, and a
+scan hops across the band rather than waking on a schedule — so it takes more
+airtime than an established connection does. Beacons and association survive
+that; the short bursts of packets a client needs *before* it has an address do
+not. The symptom is brutal to diagnose: clients see the network, associate
+successfully, then never complete DHCP and fall back to a `169.254` address,
+while a secured AP additionally fails its WPA2 handshake with `reason 15`.
+Nothing logs an error. `GamepadInput::setDiscoverable(false)` before
+`WebUI::start()` is what makes the access point usable at all.
 
 `main/web_ui.cpp` hardcodes the AP credentials. They are a demo default meant
 to be changed — the AP has no internet access and only controls lights and
