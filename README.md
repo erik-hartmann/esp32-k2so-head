@@ -98,6 +98,24 @@ Close the serial monitor before flashing, or the port will be busy. And use a
 **data** USB cable — a charge-only cable powers the board and looks entirely
 normal but never enumerates a COM port.
 
+### Updating over WiFi
+
+Once the OTA partition layout is on the board, USB is only needed again if the
+partition table itself changes. Build as usual, then push that same binary:
+
+```bash
+python components/arduino/tools/espota.py -i 192.168.4.1 -p 3232 -f .pio/build/esp32-devkitc/firmware.bin
+```
+
+Hold the admin button for a second first to bring the access point up, and
+join `ESP32-LEDs` from the machine doing the upload. The board writes into
+whichever OTA slot it is not currently running from, then reboots into it — so
+a failed or interrupted transfer leaves the working firmware untouched.
+
+**The uploading machine loses its normal network while joined to the head's
+AP.** If that machine is also your only route to the internet, expect it to go
+offline for the duration.
+
 ### On Windows: set a UTF-8 stdio encoding
 
 ```bash
