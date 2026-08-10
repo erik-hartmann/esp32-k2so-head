@@ -1,7 +1,35 @@
 LICENSES
 
-* Template code: Apache-2.0
-* bluepad32: Apache-2.0
-* bluepad32_arduino: Apache-2.0 and LGPL-2.1-or-later
-* btstack: https://github.com/bluekitchen/btstack/blob/master/LICENSE
+This repository bundles several third-party components, each under its own
+license. See docs/attribution.md for links and credits, and components/
+VENDORED.md for the exact upstream versions of the vendored Adafruit
+libraries.
 
+Project code
+------------
+* Project source (main/, docs/): Apache-2.0
+* Template code this project was built from: Apache-2.0
+
+Bundled components
+------------------
+* bluepad32:               Apache-2.0
+* bluepad32_arduino:       Apache-2.0 and LGPL-2.1-or-later
+* btstack:                 See https://github.com/bluekitchen/btstack/blob/master/LICENSE
+                           NOTE: BTstack is free for non-commercial use.
+                           Commercial use requires a license from BlueKitchen
+                           GmbH.
+* arduino-esp32:           LGPL-2.1-or-later (git submodule, components/arduino)
+
+Vendored Adafruit libraries
+---------------------------
+* Adafruit_BusIO:          MIT           (components/Adafruit_BusIO/LICENSE)
+* Adafruit_NeoPixel:       LGPL-3.0      (components/Adafruit_NeoPixel/COPYING)
+* Adafruit_PWMServoDriver: BSD-3-Clause  (components/Adafruit_PWMServoDriver/license.txt)
+
+Copyleft obligations
+--------------------
+Adafruit_NeoPixel (LGPL-3.0), arduino-esp32 and bluepad32_arduino
+(LGPL-2.1-or-later) are statically linked into the firmware image. The
+corresponding source for all of them is present in this repository and
+unmodified, which satisfies the relinking requirement. If you modify any of
+that source, your changes must remain published under the same license.

@@ -17,13 +17,22 @@ under 1 MB.
 
 ## Provenance
 
-| Component | Upstream | Version | Commit |
-| --------- | -------- | ------- | ------ |
-| `Adafruit_BusIO` | [adafruit/Adafruit_BusIO](https://github.com/adafruit/Adafruit_BusIO) | 1.17.4 | `3b8364267c3ee6e16bad91bc2101aefbd5b5915f` |
-| `Adafruit_NeoPixel` | [adafruit/Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) | 1.15.5 | `d514fc3beae85dd4c2b19781b93faa47bd6e996f` |
-| `Adafruit_PWMServoDriver` | [adafruit/Adafruit-PWM-Servo-Driver-Library](https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library) | 3.0.3 | `a98850b815bf9696c8ffdc2a0f89d657c52dd44b` |
+| Component | Upstream | Version | Commit | License |
+| --------- | -------- | ------- | ------ | ------- |
+| `Adafruit_BusIO` | [adafruit/Adafruit_BusIO](https://github.com/adafruit/Adafruit_BusIO) | 1.17.4 | `3b8364267c3ee6e16bad91bc2101aefbd5b5915f` | MIT (`LICENSE`) |
+| `Adafruit_NeoPixel` | [adafruit/Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) | 1.15.5 | `d514fc3beae85dd4c2b19781b93faa47bd6e996f` | **LGPL-3.0** (`COPYING`) |
+| `Adafruit_PWMServoDriver` | [adafruit/Adafruit-PWM-Servo-Driver-Library](https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library) | 3.0.3 | `a98850b815bf9696c8ffdc2a0f89d657c52dd44b` | BSD-3-Clause (`license.txt`) |
 
-All three are MIT licensed; their `LICENSE` files are included as shipped.
+Each library's license file is included as shipped. **They are not all the
+same license** — Adafruit_NeoPixel is LGPL-3.0, which carries obligations the
+permissive MIT and BSD ones do not.
+
+For LGPL-3.0 specifically: this firmware statically links Adafruit_NeoPixel,
+which triggers the relinking requirement in section 4. Distributing the
+complete corresponding source — which this repository does, with the library
+present and unmodified — satisfies it. Keep it that way: if you ever patch
+Adafruit_NeoPixel's *source* (as opposed to adding the `CMakeLists.txt` noted
+below), those changes must remain published under LGPL-3.0.
 
 ## Local changes
 
