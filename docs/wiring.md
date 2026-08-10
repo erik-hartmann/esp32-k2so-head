@@ -179,9 +179,14 @@ A solderable perfboard: 15 rows, columns A–J, with a `+`/`−` rail pair on
   row is a separate node. The centre channel breaks them. Each rail is one
   continuous vertical strip.
 
-Because F–J is a single node, a connector pin in column H and a jumper in
-column J of the same row are the same electrical point. That fact drives the
-layout below.
+Because F–J is a single node, a connector pin and a jumper anywhere else in
+that same row are the same electrical point. That fact drives the layout
+below: the connector sits toward the middle of the bank and the jumpers leave
+from column J, without needing a wire between them.
+
+The same rule on the other side is what makes the screw terminals work.
+Rows carrying power land only in the F–J bank, so the A–E half of those rows
+is dead space available for anything convenient.
 
 ## Devices on this board
 
@@ -201,29 +206,33 @@ All three devices use an identical 4-row block, which is the whole reason this
 layout stays readable:
 
 ```
-            A  B  C  D  E   ‖   F  G  H  I  J     R+  R−
-  row n     ·  ·  ·  ·  ·   ‖   ·  ·  ▣  ·  ●─────●   ·     5 V     -> + rail
-  row n+1   ·  ·  ·  ·  ·   ‖   ·  ·  ▣  ·  ●─────────●     GND     -> − rail
-  row n+2   ·  ○  ·  ·  ●──[R]──●  ▣  ·  ·    ·   ·         signal  -> GPIO
-  row n+3   ·  ·  ·  ·  ·   ‖   ·  ·  ·  ·  ·    ·   ·      (spacer)
+            A  B  C  D  E   ‖   F  G  H  I  J    R+  R−
+  row n     ·  ·  ·  ·  ·   ‖   ·  ▣  ·  ·  ●────●   ·     5 V    -> + rail
+  row n+1   ·  ⊗  ·  ·  ·   ‖   ·  ▣  ·  ·  ●────────●     GND    -> − rail
+  row n+2   ·  ○  ·  ·  ●──[R]──●  ▣  ·  ·  ·    ·   ·     signal -> GPIO
+  row n+3   ·  ·  ·  ·  ·   ‖   ·  ·  ·  ·  ·    ·   ·     (spare)
 
-  ▣  3-pin JST-XH connector pin (body sits over F–I, centred on H)
+  ▣  3-pin JST-XH connector pin, column G (body spans F–H)
   ●  jumper solder point
-  ○  GPIO wire landing
+  ○  GPIO landing — live pin of the screw terminal
+  ⊗  dead pin of that same terminal
  [R] 330 Ω, bridging the centre channel on its natural lead spacing
 ```
 
 Connector pin order is **5 V, GND, signal** top to bottom, the same for all
 three, so no cable can be built backwards by accident.
 
-### Why the jumpers leave from column J, not H
+Column G is not special — anywhere in F–I works, since the whole bank is one
+node per row. Keep the body clear of column J so the jumper pads stay
+accessible.
 
-Column H is where the connector pins sit. Landing a jumper there means
-soldering a wire onto a pad already occupied by a connector lead — doable, but
-it is the most awkward joint on the board and the least mechanically sound.
-Column J is the same node, gets its own pad, sits clear of the connector body
-so a jumper can be reworked without desoldering a connector, and halves the
-run to the rail (2 pitches instead of 4).
+### Why the jumpers leave from column J
+
+Landing a jumper on the connector's own column means soldering a wire onto a
+pad already occupied by a connector lead — doable, but it is the most awkward
+joint on the board and the least mechanically sound. Column J is the same
+node, gets its own pad, sits clear of the connector body so a jumper can be
+reworked without desoldering a connector, and is the shortest run to the rail.
 
 ## Placement — rails
 
@@ -245,11 +254,14 @@ junction needs one bulk reservoir rather than one per feed point.
 
 ## Placement — devices (F–J bank)
 
-| Device        | Connector rows | 5 V jumper | GND jumper | Resistor | GPIO landing |
-| ------------- | -------------- | ---------- | ---------- | -------- | ------------ |
-| LED cluster A | 4–6            | J4 → R+    | J5 → R−    | row 6    | B6 → GPIO25  |
-| LED cluster B | 8–10           | J8 → R+    | J9 → R−    | row 10   | B10 → GPIO26 |
-| DFPlayer Mini | 12–14          | J12 → R+   | J13 → R−   | row 14   | B14 → GPIO17 |
+| Device        | Connector | 5 V jumper | GND jumper | Resistor | GPIO landing |
+| ------------- | --------- | ---------- | ---------- | -------- | ------------ |
+| LED cluster A | G4–G6     | J4 → R+    | J5 → R−    | E6↔F6    | B6 → GPIO25  |
+| LED cluster B | G8–G10    | J8 → R+    | J9 → R−    | E10↔F10  | B10 → GPIO26 |
+| DFPlayer Mini | G12–G14   | J12 → R+   | J13 → R−   | E14↔F14  | B14 → GPIO17 |
+
+GPIO17 is the ESP32's **TX** and lands on the DFPlayer's **RX** — serial
+lines cross. Wiring TX to TX fails silently, with no error to point at it.
 
 ### Optional: screw terminals at the GPIO landings
 
@@ -259,21 +271,24 @@ build used **2-pin blocks mounted vertically and wired on one side only**:
 
 - Rotate the block 90° so its two pins span two *rows* in column B rather than
   two columns in one row.
-- Wire the pin on the device row; leave the other screw empty.
+- **Put the dead pin above**, so each block occupies **B5+B6, B9+B10 and
+  B13+B14** with only the lower screw wired.
 
 This is electrically clean because A–E in each row is a separate node — the
 two pins land on two different nodes, and the block's own pins are not
 connected to each other internally. The unused pin is a dead stub, not a
 short.
 
-Two things to check when placing them:
+Upward is the better direction, and not arbitrarily. The row above each GPIO
+landing is that device's **GND** row, which connects over in the F–J bank —
+so its A–E half is guaranteed unused. Pointing the block downward would put
+the dead pin on the spare row below, which is the only free row left in each
+block and worth keeping clear for whatever gets added later.
 
-- **The dead pin needs an unused row.** The motif's spacer rows absorb them
-  exactly: B6+B7, B10+B11, B14+B15. Don't later wire something into a row
-  that has a dead terminal pin sitting in it.
-- **Rotated, the body is 3 columns wide instead of 3 rows long.** Sitting over
-  columns A–C it covers pads in the same node anyway, so nothing is lost — but
-  keep it clear of column E, where the resistor lead lands.
+One thing to check when placing them: **rotated, the body is 3 columns wide
+instead of 3 rows long.** Sitting over columns A–C it covers pads on the same
+node anyway, so nothing is lost — but keep it clear of column E, where the
+resistor lead lands.
 
 ## Underside wiring
 
@@ -317,9 +332,10 @@ Lowest components first, so nothing blocks iron access:
 1. The three 330 Ω resistors (rows 6, 10, 14), bridging the centre channel.
 2. All eight underside jumpers. **Test continuity rail-to-rail now,** before
    anything obstructs the pads.
-3. The three 3-pin JST-XH connectors (rows 4–6, 8–10, 12–14).
-4. The five 2-pin screw terminals (rows 1 and 15, both rail pairs).
-5. The 1000 µF capacitor last — **check polarity**, `+` leg to the `+` rail.
+3. The three 3-pin JST-XH connectors (G4–G6, G8–G10, G12–G14).
+4. The three GPIO screw terminals (B5+B6, B9+B10, B13+B14), dead pin up.
+5. The five rail screw terminals (rows 1 and 15, both rail pairs).
+6. The 1000 µF capacitor last — **check polarity**, `+` leg to the `+` rail.
 
 Before applying power the first time:
 
@@ -357,6 +373,33 @@ PWM and WS2812 edges.
 If audio commands ever garble — wrong track, spurious playback — swapping R3
 to 1 kΩ is a two-minute rework. Avoid 10 kΩ: it would probably work, but it
 leaves a high-impedance CMOS input on the noisiest wire bundle in the head.
+
+## Connecting the DFPlayer Mini
+
+The cable side of the row 12–14 connector. The DFPlayer is a 16-pin module,
+8 per side, and the three pins it needs from this board are **not** adjacent:
+
+| Board row | Signal | DFPlayer pin |
+| --------- | ------ | ------------ |
+| 12 | 5 V | **VCC** — pin 1 |
+| 13 | GND | **GND** — pin 7 (pin 15 is the same net if it routes better) |
+| 14 | signal | **RX** — pin 2 |
+
+VCC and RX sit together at pins 1–2, but GND is five pins down the same side,
+so that third conductor runs along the module rather than joining the other
+two. Leave the DFPlayer's TX (pin 3) unconnected.
+
+The speaker goes to **SPK1 (pin 8)** and **SPK2 (pin 6)** — not to DAC_L /
+DAC_R. Those two pairs look interchangeable and are not: SPK drives a bare
+speaker from the onboard amp, while DAC is line-level output for an external
+amplifier. A speaker on the DAC pins is barely audible. There is no polarity
+to get wrong on the speaker itself.
+
+The microSD card needs an `mp3` folder at its root with four-digit filenames —
+`/mp3/0001.mp3` through `/mp3/0004.mp3`, matching `AUDIO_TRACK_COUNT` in the
+board config. That folder addressing is deliberate: the flat track index
+depends on the order files were physically written to the card and is not
+reliable.
 
 ## Why the DFPlayer only needs 3 conductors
 
