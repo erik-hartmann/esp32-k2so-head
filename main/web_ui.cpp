@@ -137,7 +137,7 @@ void WebUI::begin() {
     // Make sure the radio really is down rather than relying on it never
     // having been brought up.
     WiFi.mode(WIFI_OFF);
-    Console.println("Web UI: routes registered, WiFi off (D-pad Up on the gamepad toggles it)");
+    Console.println("Web UI: routes registered, WiFi off (hold the board's admin button to toggle)");
 }
 
 void WebUI::start() {
