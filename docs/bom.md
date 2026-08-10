@@ -41,7 +41,7 @@ Prices intentionally omitted — they move too fast to keep accurate.
 | 2 | **MG90S servo** (metal gear) | Eye pan and tilt, via linkages. Metal gears matter here — the linkages backdrive the servo every time the head is handled. Tilt runs a widened pulse range (972–2056 µs) set in `sketch.cpp`. | [B0BWJ4RKGV](https://www.amazon.com/dp/B0BWJ4RKGV) |
 | 1 | **DFPlayer Mini** MP3 module | Audio. Serial-controlled at 9600 baud, with a built-in amp and microSD slot. The variant received was an HW-247A clone; see the orientation and speaker-pin notes in [wiring.md](wiring.md), which differ from DFRobot's original. | [B0F1F711ZH](https://www.amazon.com/dp/B0F1F711ZH) |
 | 1 | **Speaker** for the DFPlayer | Drives directly from the DFPlayer's onboard amp — no separate amplifier needed. | [B0BWYBFPW8](https://www.amazon.com/dp/B0BWYBFPW8) |
-| 1 | **microSD card, 32 GB or smaller** | **FAT32 — not exFAT**, and not a 64 GB card. The DFPlayer reads neither, and fails identically to a wiring fault: silence, no error. A 16 GB card ships FAT32 already and needs no formatting. Files go in `/mp3/` as `0001.mp3`, `0002.mp3`, …, with `AUDIO_TRACK_COUNT` set to match. | [B0CYT352MW](https://www.amazon.com/dp/B0CYT352MW) |
+| 1 | **microSD card, under 32 GB** | **Must be FAT32, not exFAT.** The DFPlayer reads neither exFAT nor an oversized card, and fails identically to a wiring fault: silence, no error, nothing to distinguish it from a bad solder joint. A 16 GB card ships FAT32 from the factory and needs no formatting — check before reformatting anything. Files go in `/mp3/` as `0001.mp3`, `0002.mp3`, …, with `AUDIO_TRACK_COUNT` set to match. | *generic part* |
 
 ## Passives
 

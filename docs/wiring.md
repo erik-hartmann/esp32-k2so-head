@@ -427,16 +427,16 @@ config must equal how many are there. That folder addressing is deliberate:
 the flat track index depends on the order files were physically written to the
 card and is not reliable.
 
-**Format the card FAT32, and use one of 32 GB or smaller.** Two traps here,
-both of which fail the same silent way — the module simply never plays
-anything, indistinguishable from a wiring fault:
+**Use a card under 32 GB, formatted FAT32.** Two traps here, both of which
+fail the same silent way — the module simply never plays anything,
+indistinguishable from a wiring fault:
 
 - **exFAT does not work.** The DFPlayer reads FAT32 and FAT16 only. Windows
   offers exFAT by default for larger cards and will happily format one that
   the module cannot read at all.
-- **Cards above 32 GB are out of spec.** Windows also will not format above
-  32 GB as FAT32 through its normal dialogs, which is a useful hint that you
-  have reached for the wrong card.
+- **Large cards are out of spec.** Windows also will not format above 32 GB as
+  FAT32 through its normal dialogs, which is a useful hint that you have
+  reached for the wrong card.
 
 A 16 GB card arrives FAT32 from the factory and needs no formatting. Check
 before reformatting anything — the card in this build already held a photo
