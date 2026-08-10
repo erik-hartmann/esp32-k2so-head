@@ -381,6 +381,12 @@ The cable side of the row 12–14 connector. The DFPlayer is a 16-pin module,
 
 ![DFPlayer Mini pinout, with the pins used by this build highlighted](dfplayer-pinout.svg)
 
+**Orient the module by pin 1 or the silkscreen, never by the card slot.** With
+VCC at the top-left, the microSD slot is at the **bottom** edge and the
+`DFPlayer Mini` marking runs across the top. Reaching for the slot as the
+"top" turns the module 180°, which lands your 5 V wire on SPK_2 and ground on
+RX — the one mistake here with real potential to destroy something.
+
 
 | Board row | Signal | DFPlayer pin |
 | --------- | ------ | ------------ |
