@@ -7,7 +7,8 @@ set(srcs
         "web_ui.cpp"
         "servo_controller.cpp"
         "eye_motion.cpp"
-        "audio_player.cpp")
+        "audio_player.cpp"
+        "ota_service.cpp")
 
 set(requires "bluepad32" "bluepad32_arduino" "arduino" "btstack" "Adafruit_NeoPixel" "Adafruit_BusIO" "Adafruit_PWMServoDriver")
 

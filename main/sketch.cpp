@@ -55,6 +55,7 @@
 #include "gamepad_input.h"
 #include "led_controller.h"
 #include "light_effects.h"
+#include "ota_service.h"
 #include "web_ui.h"
 
 #ifdef I2C_SDA_GPIO
@@ -161,6 +162,9 @@ void loop() {
     GamepadInput::update();
     const GamepadState& gp = GamepadInput::state();
     WebUI::handleClient();
+    // No-op unless the AP is up. Once an upload actually starts this blocks
+    // until the board reboots into the new image.
+    OtaService::handle();
 
     if (gp.connected) {
         // LT/RT continuously dim their own side: released (0) -> full
@@ -310,9 +314,15 @@ void loop() {
             sAdminPressedAtMs = now;
         } else if (!sAdminHoldFired && (now - sAdminPressedAtMs) >= kAdminHoldMs) {
             if (WebUI::isRunning()) {
+                // OTA first: it holds a socket on an interface WebUI::stop()
+                // is about to take down.
+                OtaService::stop();
                 WebUI::stop();
             } else {
                 WebUI::start();
+                // Only after the AP is actually up — begin() binds a socket
+                // and there is no interface to bind to before this point.
+                OtaService::begin();
             }
             // Latch until release, so one hold is one toggle rather than one
             // per loop() tick for as long as the button is down.

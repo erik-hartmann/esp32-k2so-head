@@ -1,4 +1,15 @@
 # Name,   Type, SubType, Offset,   Size,     Flags
+# Dual-app layout for OTA. The app no longer lives in a single "factory"
+# partition: an over-the-air update writes into whichever of ota_0 / ota_1 is
+# not currently running, then otadata records which to boot next. That is what
+# makes a failed or half-received update non-fatal — the previous image is
+# still intact and still bootable.
+#
+# 0x1E0000 is 1,966,080 bytes per slot. The firmware is around 1.44 MB, so
+# there is roughly 500 KB of headroom. Watch it: two slots means every byte
+# added costs twice the flash, and the ceiling is now half what it was.
 nvs,       data, nvs,     0x9000,   0x6000,
-phy_init,  data, phy,     0xf000,   0x1000,
-factory,   app,  factory, 0x10000,  0x300000,
+otadata,   data, ota,     0xf000,   0x2000,
+phy_init,  data, phy,     0x11000,  0x1000,
+ota_0,     app,  ota_0,   0x20000,  0x1E0000,
+ota_1,     app,  ota_1,   0x200000, 0x1E0000,
