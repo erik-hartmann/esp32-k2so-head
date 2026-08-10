@@ -361,9 +361,18 @@ void loop() {
                 // but never complete DHCP.
                 GamepadInput::setDiscoverable(false);
                 WebUI::start();
-                // Only after the AP is actually up — begin() binds a socket
-                // and there is no interface to bind to before this point.
-                OtaService::begin();
+                if (WebUI::isRunning()) {
+                    // Only after the AP is actually up — begin() binds a
+                    // socket, and there is no interface to bind to before
+                    // this point.
+                    OtaService::begin();
+                } else {
+                    // The AP did not come up, so give the radio back. Without
+                    // this, a failed start leaves scanning off with nothing to
+                    // show for it: no access point, and no way to pair a
+                    // controller, recoverable only by rebooting.
+                    GamepadInput::setDiscoverable(true);
+                }
             }
             // Latch until release, so one hold is one toggle rather than one
             // per loop() tick for as long as the button is down.
