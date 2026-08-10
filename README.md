@@ -1,268 +1,155 @@
-# ESP-IDF + Arduino + Bluepad32 template app
-
-[![discord](https://img.shields.io/discord/775177861665521725.svg)](https://discord.gg/r5aMn6Cw5q)
-
-![logo](https://gitlab.com/ricardoquesada/bluepad32-arduino/-/raw/main/img/bluepad32-arduino-logo.png)
-
-This is a template application to be used
-with [Espressif IoT Development Framework](https://github.com/espressif/esp-idf).
-
-Please check [ESP-IDF docs](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for getting
-started instructions.
-
-Requires ESP-IDF **v5.4.2**.
-
-Includes the following ESP-IDF components, with a pre-configured `sdkconfig` file:
-
-* [Arduino Core for ESP32](https://github.com/espressif/arduino-esp32) component
-* [Bluepad32](https://github.com/ricardoquesada/bluepad32/) component
-* [BTStack](https://github.com/bluekitchen/btstack) component
-
-## How to compile it
-
-Clone the template project:
-
-   ```sh
-   git clone --recursive https://github.com/ricardoquesada/esp-idf-arduino-bluepad32-template.git my_project
-   ```
-
-After cloning the *template* you have the following options:
-
-* A) Using PlatformIO
-* B) Visual Studio Code + ESP-IDF plugin
-* C) CLion (personal favorite)
-* D) ESP-IDF from command line
-
-*Note: Arduino IDE is not supported in this "template app" project*
-
-### A) Using PlatformIO + ESP-IDF
-
-![open_project][pio_open_project]
-
-1. Open Visual Studio Code, select the PlatformIO plugin
-2. Click on "Pick a folder", and select the recently cloned "my_project" folder
-
-That's it. The PlatformIO will download the ESP-IDF toolchain and its dependencies.
-
-It might take a few minutes to download all dependencies. Be patient.
-
-*Note: You might need to remove previously installed PlatformIO packages. Just do `rm -rf ~/.platformio`
-and reinstall the PlatformIO plugin.*
-
-![build_project][pio_build_project]
-
-After all dependencies were installed:
-
-1. Click on one of the pre-created boards, like *esp32-s3-devkit-1*. Or edit `platformio.ini` file, and add your own.
-2. Click on *build*
-
-![monitor_project][pio_monitor_project]
-
-Finally, click on "Upload and Monitor":
-
-* It will upload your sketch
-* And will enter into "monitor" mode: You can see and use the console. Try typing `help` on the console.
-
-Further reading: [PlatformIO Espressif IoT Development Framework][pio_espidf]
-
-[pio_open_project]: https://lh3.googleusercontent.com/pw/ABLVV85JEEjjsQqcCcfZUclYF1ItYSHPmpzP0SC4VH9Ypqp05r2ixlv9C2xv4p-r6fW_CyCNa8ylmeSjyUg_K2Sp-XUXQRTYO_6HvhQXcXxTZXgQvvNBqA8JaerwCB1UODkXgYa_6ONT19KTO52OMs0eOOeeMg=-no-gm?authuser=0
-
-[pio_build_project]: https://lh3.googleusercontent.com/pw/ABLVV86DiV9H-wDEv1X8ra_fJAw0OG2sBoM5d0gJElPfptzVpb6n8gzOEHDfKXLMKrivzNSt03XpMWSw-hSVJUi0aavQiwgL0t1rmQeKqfYpXkGCKKwcerrNx8BBkFR3VoKQEPMF-e-xVvKVque2pi1sTa8tWA=-no-gm?authuser=0
-
-[pio_monitor_project]: https://lh3.googleusercontent.com/pw/ABLVV845uPqRtJkUrv4JlODuTr7Shnw0HR7BdojRbxv3xWyiUO-V_Kv42YAKAV-XyoNRPY5vsyj0yRDsRxH0mxz8Q1NYzvhCKw5Ni9MH6UYR8IiaT8XS9hysR81APn8X2tnVgnmJ6ZkSPCgUURnE2MVYIWYrNQ=-no-gm?authuser=0
-
-[pio_espidf]: https://docs.platformio.org/en/latest/frameworks/espidf.html
-
-### B) Visual Studio Code + ESP-IDF plugin
-
-![vscode_ide](https://lh3.googleusercontent.com/pw/AM-JKLUxjqUhU2tM-bKw3togS3gTkBdtmi40kqW2c2KieAybnD770I3pdaLnFU7a-sM7dUUGmcWpigvElc1fGo1J-5bJlVdbg8HOJZKbUXo6A_IqIvUGEK6GtwxqNy5EFJmijrBnB_aQhd_fi3GQnXZ1V7WYvw=-no)
-
-Open [Visual Studio Code][vscode] and install the [ESP-IDF plugin][esp-idf-plugin].
-
-Features:
-
-* All the regular Visual Studio Code regular features
-* ...plus configure, build, flash and monitor your project
-* ...and much more
-
-[vscode]: https://code.visualstudio.com/
-
-[esp-idf-plugin]: https://github.com/espressif/vscode-esp-idf-extension
-
-### C) CLion
-
-![clion_ide](https://lh3.googleusercontent.com/pw/AP1GczO-t-uncCZJF8ygBXWmO8Dvrx3C4f7tHhisfF39GKXUaryiRA5rYJWx3SQR8fR1orYGmHdOSVnZLVdoYtoc6IYnurdbtXo6_4ZIVgwnzyWJrNkyQFHu6kma6c__YePCddO9BjMFWHyVrBBk7rmNki5EDQ=-no-gm?authuser=0)
-
-[CLion][clion] is a great IDE, and my personal favorite. It works very well with ESP-IDF based projects.
-
-To integrate your project with CLion, follow the steps in the [CLion official documentation][clion_esp_idf].
-
-[clion]: https://www.jetbrains.com/clion/
-
-[clion_esp_idf]: https://www.jetbrains.com/help/clion/esp-idf.html
-
-### D) ESP-IDF from command line
-
-#### For Windows
-
-1. Install [ESP-IDF v5.4][esp-idf-windows-installer]. For further info,
-   read: [ESP-IDF Getting Started for Windows][esp-idf-windows-setup]
-
-    * Either the Online or Offline version should work
-    * When asked which components to install, don't change anything. Default options are Ok.
-    * When asked whether ESP can modify the system, answer "Yes"
-
-2. Launch the "ESP-IDF v5.4 CMD" (type that in the Windows search box)
-
-3. Compile it
-
-    ```sh
-    # Compile it
-    cd my_project
-    idf.py build
-
-    # Flash + open debug terminal
-    idf.py flash monitor
-    ```
-
-[esp-idf-windows-setup]: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/windows-setup.html
-
-[esp-idf-windows-installer]: https://dl.espressif.com/dl/esp-idf/?idf=5.4
-
-#### For Linux / macOS
-
-1. Requirements and permissions
-
-   Install ESP-IDF dependencies (taken from [here][toolchain-deps]):
-
-    ```sh
-    # For Ubuntu / Debian
-    sudo apt-get install git wget flex bison gperf python3 python3-pip python3-setuptools cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
-    ```
-
-   And in case you don't have permissions to open `/dev/ttyUSB0`, do:
-   (taken from [here][ttyusb0])
-
-    ```sh
-    # You MUST logout/login (or in some cases reboot Linux) after running this command
-    sudo usermod -a -G dialout $USER
-    ```
-
-2. Install and setup ESP-IDF
-
-    ```sh
-    # Needs to be done just once
-    # Clone the ESP-IDF git repo
-    mkdir ~/esp && cd ~/esp
-    git clone -b release/v5.4 --recursive https://github.com/espressif/esp-idf.git
-
-    # Then install the toolchain
-    cd ~/esp/esp-idf
-    ./install.sh
-    ```
-
-3. Compile the template
-
-   Clone the template:
-
-    ```sh
-    # Do it everytime you want to start a new project
-    # Clone the template somewhere
-    mkdir ~/src && cd ~/src
-    git clone --recursive https://github.com/ricardoquesada/esp-idf-arduino-bluepad32-template.git my_project
-    ```
-
-   Export the ESP-IDF environment variables in your shell:
-
-    ```sh
-    # Do it everytime you open a new shell
-    # Optional: add it in your ~/.bashrc or ~/.profile
-    source ~/esp/esp-idf/export.sh
-    ```
-
-   And finally compile and install your project.
-
-    ```sh
-    # Compile it
-    cd ~/src/my_project
-    idf.py build
-
-    # Flash + open debug terminal
-    idf.py flash monitor
-    ```
-
-[toolchain-deps]: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-setup.html
-
-[ttyusb0]: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html#linux-dialout-group
-
-## Using 3rd party Arduino libraries
-
-To include 3rd party Arduino libraries in your project, you have to:
-
-* Add them to the `components` folder.
-* Add `CMakeLists.txt` file inside the component's folder
-
-Let's use a real case as an example:
-
-### Example: Adding ESP32Servo
-
-Suppose you want to use [ESP32Servo] project. The first thing to notice is that the source files are placed
-in the `src` folder. We have to create a `CMakeLists.txt` file that tells ESP-IDF to look for the sources
-in the `src` folder.
-
-Example:
-
-```sh
-# 1) We clone ESP32Servo into components folder
-cd components
-git clone https://github.com/madhephaestus/ESP32Servo.git
-cd ESP32Servo
+# esp32-k2so-head
+
+An animatronic K-2SO head driven by an ESP32 and flown with an Xbox Wireless
+Controller over Bluetooth.
+
+Two WS2812 rings light the eyes, two servos on a PCA9685 pan and tilt them
+through linkages, and a DFPlayer Mini handles audio. With no controller
+connected the head runs autonomous idle behavior — it looks around, holds the
+occasional stare, and blinks.
+
+Built for someone doing this for the first time. The wiring is documented in
+two stages, breadboard then soldered board, and the mistakes that cost real
+debugging time are written down rather than quietly fixed.
+
+## What it does
+
+- **13 lighting patterns** — rainbow, chase, confetti, twinkle, fire, strobe
+  and others, all across the full 7 pixels of each ring
+- **Live accent color** steered by the left stick, on every pattern rather
+  than a dedicated "reactive" one
+- **Eased eye motion** from the right stick, with autonomous idle when the
+  controller is away: weighted random saccades, occasional long stares, and
+  natural blinking
+- **Per-side dimming** on the triggers, so each eye responds independently
+- **A web UI** over a soft AP for patterns, color and brightness — off by
+  default, toggled from the gamepad
+- **Audio** from a DFPlayer Mini, driven by a non-blocking driver that never
+  stalls the control loop
+
+## Controls
+
+| Input | Action |
+| ----- | ------ |
+| Left stick | Accent color hue (centred = the palette default) |
+| Right stick | Eye pan and tilt |
+| LT / RT | Dim the left / right eye independently |
+| L1 / R1 | Previous / next lighting pattern |
+| A / B | Brightness down / up, while held |
+| X | Lights off and on, remembering brightness; also parks idle motion |
+| Y | Step the default accent color through the palette |
+| Y, double-clicked | Pin the current color as the default, until reboot |
+| D-pad Up | Toggle the WiFi AP and web UI |
+| D-pad Down | Play the next audio clip |
+
+The controller must be a **Bluetooth** Xbox model (2016 or later). The 2013
+controller uses a proprietary radio and will not pair.
+
+## Hardware
+
+- **[docs/bom.md](docs/bom.md)** — every part, with the spec that actually
+  matters and a power budget explaining the supply sizing
+- **[docs/wiring.md](docs/wiring.md)** — the build in two parts: a breadboard
+  prototype to prove the firmware against real hardware, then the move to a
+  soldered perfboard laid out as a proper power junction
+
+Start with the breadboard. The point of that stage isn't the circuit, it's
+proving the firmware before anything becomes permanent.
+
+## Building
+
+Requires [PlatformIO](https://platformio.org/). ESP-IDF 5.4.2 and the Arduino
+core are pulled in automatically.
+
+```bash
+git clone --recursive https://github.com/erik-hartmann/esp32-k2so-head.git
 ```
 
-And now create these files inside `components/ESP32Servo` folder:
+`--recursive` matters — `components/arduino` is a submodule. If you forget it,
+run `git submodule update --init` afterwards.
 
-```sh
-# 2) Create CMakeLists.txt file
-# Copy & paste the following lines to the terminal:
-cat << EOF > CMakeLists.txt
-idf_component_register(SRC_DIRS "src"
-                    INCLUDE_DIRS "src"
-                    REQUIRES "arduino")
-EOF
+Build, flash and monitor:
+
+```bash
+python -m platformio run -e esp32-devkitc -t upload
 ```
 
-Finally, update the dependencies in the `main/CMakeLists.txt`. E.g:
-
-```sh
-cd main
-edit CMakeLists.txt
+```bash
+python -m platformio device monitor -e esp32-devkitc
 ```
 
-...and append `ESP32Servo` to `REQUIRES`. The `main/CMakeLists.txt` should look like this:
+Close the serial monitor before flashing, or the port will be busy. And use a
+**data** USB cable — a charge-only cable powers the board and looks entirely
+normal but never enumerates a COM port.
 
-```cmake
-idf_component_register(SRCS "${srcs}"
-        INCLUDE_DIRS "."
-        REQUIRES "${requires}" "ESP32Servo")
-```
+## Supported boards
 
-And that's it. Now you can include `ESP32Servo` from your code. E.g:
+| Environment | Board |
+| ----------- | ----- |
+| `esp32-devkitc` *(default)* | Espressif ESP32-DevKitC — the reference build |
+| `esp32dev` | ELEGOO EL-SM-012 |
+| `esp32-s3-devkitc-1` | ESP32-S3-DevKitC-1 |
+| `esp32-c3-devkitc-02` | ESP32-C3-DevKitC-02 |
 
-```cpp
-// Add this include in your arduino_main.cpp file
-#include <ESP32Servo.h>
-```
+The S3 and C3 configs are untested on real hardware. The C6 and H2
+environments exist but deliberately have no board config, so they fail the
+build with a clear error rather than silently using wrong pins.
 
-[esp32servo]: https://github.com/madhephaestus/ESP32Servo.git
+## How it's organised
 
-## Further info
+Every hardware specific — pin numbers, LED counts, which peripherals exist —
+lives in one header under `main/board_configs/`, selected per PlatformIO
+environment. No logic file hardcodes a pin, so **supporting a new board is one
+header and one `[env:...]` block**, not edits scattered across the tree.
 
-* [Bluepad32 for Arduino](https://bluepad32.readthedocs.io/en/latest/plat_arduino/)
-* [Arduino as ESP-IDF component](https://docs.espressif.com/projects/arduino-esp32/en/latest/esp-idf_component.html)
-* [ESP-IDF VSCode plugin](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/vscode-setup.html)
+| File | Responsibility |
+| ---- | -------------- |
+| `board_config.h` + `board_configs/` | All hardware specifics; fails loudly if a config is incomplete |
+| `gamepad_input.*` | The only file that touches Bluepad32 |
+| `led_controller.*` | WS2812 strips, flattened pixel indexing, per-strip dimming |
+| `light_effects.*` | The 13 patterns and the shared accent color |
+| `eye_motion.*` | Servo easing and autonomous idle behavior |
+| `servo_controller.*` | PCA9685 wrapper with per-channel pulse ranges |
+| `audio_player.*` | Non-blocking DFPlayer Mini driver |
+| `web_ui.*` | Soft AP and HTTP control panel |
+| `sketch.cpp` | Control mapping — where inputs meet behavior |
 
-## Support
+Gamepad and web input are peers: both call into the same subsystems, so either
+works with or without the other.
 
-* [Discord][discord]: any question? Ask them on our Discord server.
+### Notes for anyone extending it
 
-[discord]: https://discord.gg/r5aMn6Cw5q
+The firmware does not fit the default 1 MB app partition; `partitions.csv`
+gives it 3 MB. Setting this through `board_build.partitions` in
+`platformio.ini` works, while `CONFIG_PARTITION_TABLE_CUSTOM` in
+`sdkconfig.defaults` is silently ignored in this layout.
+
+The soft AP starts **off**. Running it at boot pushed the board into brownout
+over USB. If you make it always-on, redo the power budget in
+[docs/bom.md](docs/bom.md).
+
+`main/web_ui.cpp` hardcodes the AP credentials. They are a demo default meant
+to be changed — the AP has no internet access and only controls lights and
+servos, but anyone in radio range can read them here.
+
+## Attribution
+
+This project is a thin layer over a great deal of other people's work — the
+Bluetooth stack, the Arduino compatibility layer, the timing-critical LED
+driver. It began as a clone of Ricardo Quesada's
+[esp-idf-arduino-bluepad32-template](https://github.com/ricardoquesada/esp-idf-arduino-bluepad32-template)
+and is built on [Bluepad32](https://github.com/ricardoquesada/bluepad32),
+[BTstack](https://github.com/bluekitchen/btstack), ESP-IDF, arduino-esp32 and
+three Adafruit libraries.
+
+Full credits in **[docs/attribution.md](docs/attribution.md)**.
+
+## License
+
+Project code is Apache-2.0. Bundled components carry their own licenses — see
+[LICENSE](LICENSE) for the full inventory and
+[components/VENDORED.md](components/VENDORED.md) for exact vendored versions.
+
+Two worth knowing up front: **BTstack is free for non-commercial use only**,
+and commercial use requires a license from BlueKitchen. **Adafruit_NeoPixel is
+LGPL-3.0** and statically linked, so its source must stay published.
