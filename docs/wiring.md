@@ -379,6 +379,9 @@ leaves a high-impedance CMOS input on the noisiest wire bundle in the head.
 The cable side of the row 12–14 connector. The DFPlayer is a 16-pin module,
 8 per side, and the three pins it needs from this board are **not** adjacent:
 
+![DFPlayer Mini pinout, with the pins used by this build highlighted](dfplayer-pinout.svg)
+
+
 | Board row | Signal | DFPlayer pin |
 | --------- | ------ | ------------ |
 | 12 | 5 V | **VCC** — pin 1 |
@@ -387,7 +390,13 @@ The cable side of the row 12–14 connector. The DFPlayer is a 16-pin module,
 
 VCC and RX sit together at pins 1–2, but GND is five pins down the same side,
 so that third conductor runs along the module rather than joining the other
-two. Leave the DFPlayer's TX (pin 3) unconnected.
+two. Leave a little slack in it so it isn't under tension.
+
+**Count from the VCC end rather than eyeballing it.** RX is pin 2 and TX is
+pin 3, right next to each other, so an off-by-one puts the GPIO17 wire on TX —
+and that fails completely silently. The module powers up, its LED behaves
+normally, and nothing ever plays. Leave TX unconnected; the driver never reads
+it.
 
 The speaker goes to **SPK1 (pin 8)** and **SPK2 (pin 6)** — not to DAC_L /
 DAC_R. Those two pairs look interchangeable and are not: SPK drives a bare

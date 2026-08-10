@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 470" width="700" height="470" role="img" aria-labelledby="title desc">
+<title id="title">DFPlayer Mini pinout with this project's connections highlighted</title>
+<desc id="desc">The DFPlayer Mini module with the microSD slot at the top. Sixteen pins, eight per side. Left side top to bottom: pin 1 VCC to board row 12 as 5 volts; pin 2 RX to board row 14, the signal from GPIO17; pin 3 TX left unconnected; pins 4 and 5 DAC right and left, unused; pin 6 SPK2 to the speaker; pin 7 GND to board row 13; pin 8 SPK1 to the speaker. The right side carries auxiliary functions not used here: BUSY, USB minus and plus, ADKEY2, ADKEY1, IO2, a second GND at pin 10, and IO1. The three board conductors are not adjacent: VCC and RX sit at pins 1 and 2, but GND is five pins further down.</desc>
+
+<style>
+  .bg   { fill: #ffffff; }
+  .body { fill: none; stroke: #656d76; }
+  .slot { fill: #eaeef2; stroke: #afb8c1; }
+  .lead { stroke: #8c959f; }
+  .hole { fill: none; stroke: #8c959f; }
+  .t1   { fill: #1f2328; font: 600 13px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .t2   { fill: #57606a; font: 400 11px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .tn   { fill: #8c959f; font: 400 10px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .hd   { fill: #1f2328; font: 600 16px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .dim  { opacity: .45; }
+  .c5v  { fill: #d1242f; }
+  .csig { fill: #0969da; }
+  .cgnd { fill: #424a53; }
+  .cspk { fill: #9a6700; }
+  .rule { stroke: #d0d7de; }
+  @media (prefers-color-scheme: dark) {
+    .bg   { fill: #0d1117; }
+    .body { stroke: #8b949e; }
+    .slot { fill: #21262d; stroke: #484f58; }
+    .lead { stroke: #6e7681; }
+    .hole { stroke: #6e7681; }
+    .t1   { fill: #e6edf3; }
+    .t2   { fill: #9198a1; }
+    .tn   { fill: #6e7681; }
+    .hd   { fill: #e6edf3; }
+    .c5v  { fill: #ff7b72; }
+    .csig { fill: #58a6ff; }
+    .cgnd { fill: #9198a1; }
+    .cspk { fill: #d29922; }
+    .rule { stroke: #30363d; }
+  }
+</style>
+
+<rect class="bg" x="0" y="0" width="700" height="470"/>
+
+<text class="hd" x="350" y="30" text-anchor="middle">DFPlayer Mini — pin map</text>
+<text class="t2" x="350" y="50" text-anchor="middle">microSD slot at top; pin 1 is top-left</text>
+
+<rect class="body" x="255" y="72" width="190" height="330" rx="8" stroke-width="1.4"/>
+<rect class="slot" x="285" y="61" width="130" height="26" rx="4" stroke-width="1"/>
+<text class="tn" x="350" y="79" text-anchor="middle">microSD</text>
+<circle class="hole" cx="273" cy="107" r="6" stroke-width="1.2"/>
+
+<g class="lead" stroke-width="2.4">
+  <path d="M255 130h-33M255 166h-33M255 202h-33M255 238h-33M255 274h-33M255 310h-33M255 346h-33M255 382h-33"/>
+  <path d="M445 130h33M445 166h33M445 202h33M445 238h33M445 274h33M445 310h33M445 346h33M445 382h33"/>
+</g>
+
+<circle class="c5v"  cx="216" cy="130" r="6.5"/>
+<circle class="csig" cx="216" cy="166" r="6.5"/>
+<circle class="hole" cx="216" cy="202" r="5" stroke-width="1.5"/>
+<circle class="hole" cx="216" cy="238" r="5" stroke-width="1.5"/>
+<circle class="hole" cx="216" cy="274" r="5" stroke-width="1.5"/>
+<circle class="cspk" cx="216" cy="310" r="6.5"/>
+<circle class="cgnd" cx="216" cy="346" r="6.5"/>
+<circle class="cspk" cx="216" cy="382" r="6.5"/>
+
+<g class="dim">
+  <circle class="hole" cx="484" cy="130" r="5" stroke-width="1.5"/>
+  <circle class="hole" cx="484" cy="166" r="5" stroke-width="1.5"/>
+  <circle class="hole" cx="484" cy="202" r="5" stroke-width="1.5"/>
+  <circle class="hole" cx="484" cy="238" r="5" stroke-width="1.5"/>
+  <circle class="hole" cx="484" cy="274" r="5" stroke-width="1.5"/>
+  <circle class="hole" cx="484" cy="310" r="5" stroke-width="1.5"/>
+  <circle class="hole" cx="484" cy="346" r="5" stroke-width="1.5"/>
+  <circle class="hole" cx="484" cy="382" r="5" stroke-width="1.5"/>
+</g>
+
+<g class="tn">
+  <text x="267" y="134">1</text>
+  <text x="267" y="170">2</text>
+  <text x="267" y="206">3</text>
+  <text x="267" y="242">4</text>
+  <text x="267" y="278">5</text>
+  <text x="267" y="314">6</text>
+  <text x="267" y="350">7</text>
+  <text x="267" y="386">8</text>
+</g>
+<g class="tn dim">
+  <text x="433" y="134" text-anchor="end">16</text>
+  <text x="433" y="170" text-anchor="end">15</text>
+  <text x="433" y="206" text-anchor="end">14</text>
+  <text x="433" y="242" text-anchor="end">13</text>
+  <text x="433" y="278" text-anchor="end">12</text>
+  <text x="433" y="314" text-anchor="end">11</text>
+  <text x="433" y="350" text-anchor="end">10</text>
+  <text x="433" y="386" text-anchor="end">9</text>
+</g>
+
+<text class="t1" x="204" y="127" text-anchor="end">VCC</text>
+<text class="t2" x="204" y="142" text-anchor="end">board row 12 · 5 V</text>
+<text class="t1" x="204" y="163" text-anchor="end">RX</text>
+<text class="t2" x="204" y="178" text-anchor="end">board row 14 · from GPIO17</text>
+<text class="t1 dim" x="204" y="199" text-anchor="end">TX</text>
+<text class="t2 dim" x="204" y="214" text-anchor="end">leave unconnected</text>
+<text class="t2 dim" x="204" y="242" text-anchor="end">DAC_R</text>
+<text class="t2 dim" x="204" y="278" text-anchor="end">DAC_L</text>
+<text class="t1" x="204" y="307" text-anchor="end">SPK2</text>
+<text class="t2" x="204" y="322" text-anchor="end">speaker</text>
+<text class="t1" x="204" y="343" text-anchor="end">GND</text>
+<text class="t2" x="204" y="358" text-anchor="end">board row 13</text>
+<text class="t1" x="204" y="379" text-anchor="end">SPK1</text>
+<text class="t2" x="204" y="394" text-anchor="end">speaker</text>
+
+<g class="t2 dim">
+  <text x="496" y="134">BUSY</text>
+  <text x="496" y="170">USB −</text>
+  <text x="496" y="206">USB +</text>
+  <text x="496" y="242">ADKEY2</text>
+  <text x="496" y="278">ADKEY1</text>
+  <text x="496" y="314">IO2</text>
+  <text x="496" y="350">GND</text>
+  <text x="496" y="386">IO1</text>
+</g>
+
+<path d="M150 130 L132 130 L132 346 L150 346" fill="none" class="lead" stroke-width="1.2" opacity=".65"/>
+<text class="t2" x="124" y="230" text-anchor="end">3 wires</text>
+<text class="t2" x="124" y="245" text-anchor="end">from board,</text>
+<text class="t2" x="124" y="260" text-anchor="end">not adjacent</text>
+
+<line class="rule" x1="24" y1="420" x2="676" y2="420" stroke-width="1"/>
+<circle class="c5v"  cx="44" cy="441" r="6.5"/><text class="t2" x="57" y="445">5 V</text>
+<circle class="csig" cx="114" cy="441" r="6.5"/><text class="t2" x="127" y="445">signal</text>
+<circle class="cgnd" cx="199" cy="441" r="6.5"/><text class="t2" x="212" y="445">ground</text>
+<circle class="cspk" cx="289" cy="441" r="6.5"/><text class="t2" x="302" y="445">speaker</text>
+<circle class="hole" cx="384" cy="441" r="5" stroke-width="1.5"/><text class="t2" x="397" y="445">unused</text>
+</svg>
