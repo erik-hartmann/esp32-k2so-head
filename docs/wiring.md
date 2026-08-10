@@ -398,11 +398,18 @@ and that fails completely silently. The module powers up, its LED behaves
 normally, and nothing ever plays. Leave TX unconnected; the driver never reads
 it.
 
-The speaker goes to **SPK1 (pin 8)** and **SPK2 (pin 6)** — not to DAC_L /
-DAC_R. Those two pairs look interchangeable and are not: SPK drives a bare
-speaker from the onboard amp, while DAC is line-level output for an external
-amplifier. A speaker on the DAC pins is barely audible. There is no polarity
-to get wrong on the speaker itself.
+The speaker goes to the **two SPK pins — positions 6 and 8** on the same side
+as VCC, either side of GND — and **not** to DAC_L / DAC_R. Those two pairs
+look interchangeable and are not: SPK drives a bare speaker from the onboard
+amp, while DAC is line-level output for an external amplifier. A speaker on
+the DAC pins is barely audible.
+
+Which SPK pin is labelled `_1` and which `_2` **varies between DFPlayer
+variants** — DFRobot's original has SPK2 at position 6, while the HW-247A
+clone used here has SPK_1 there. It makes no difference: they are the two ends
+of one bridged output, so swapping them inverts phase, which is inaudible on a
+single speaker. Trust the silkscreen on your own module, and note the position
+relative to GND rather than the number.
 
 The microSD card needs an `mp3` folder at its root with four-digit filenames —
 `/mp3/0001.mp3` through `/mp3/0004.mp3`, matching `AUDIO_TRACK_COUNT` in the

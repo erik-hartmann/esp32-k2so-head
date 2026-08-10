@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 470" width="700" height="470" role="img" aria-labelledby="title desc">
 <title id="title">DFPlayer Mini pinout with this project's connections highlighted</title>
-<desc id="desc">The DFPlayer Mini module with the microSD slot at the top. Sixteen pins, eight per side. Left side top to bottom: pin 1 VCC to board row 12 as 5 volts; pin 2 RX to board row 14, the signal from GPIO17; pin 3 TX left unconnected; pins 4 and 5 DAC right and left, unused; pin 6 SPK2 to the speaker; pin 7 GND to board row 13; pin 8 SPK1 to the speaker. The right side carries auxiliary functions not used here: BUSY, USB minus and plus, ADKEY2, ADKEY1, IO2, a second GND at pin 10, and IO1. The three board conductors are not adjacent: VCC and RX sit at pins 1 and 2, but GND is five pins further down.</desc>
+<desc id="desc">The DFPlayer Mini module with the microSD slot at the top. Sixteen pins, eight per side. Left side top to bottom: pin 1 VCC to board row 12 as 5 volts; pin 2 RX to board row 14, the signal from GPIO17; pin 3 TX left unconnected; pins 4 and 5 DAC right and left, unused; pin 6 SPK_1 to the speaker; pin 7 GND to board row 13; pin 8 SPK_2 to the speaker. The two speaker pins are labelled in the opposite order on some variants; either way they are the two ends of one bridged output and are interchangeable. The right side carries auxiliary functions not used here: BUSY, USB minus and plus, ADKEY2, ADKEY1, IO2, a second GND at pin 10, and IO1. The three board conductors are not adjacent: VCC and RX sit at pins 1 and 2, but GND is five pins further down.</desc>
 
 <style>
   .bg   { fill: #ffffff; }
@@ -100,11 +100,11 @@
 <text class="t2 dim" x="204" y="214" text-anchor="end">leave unconnected</text>
 <text class="t2 dim" x="204" y="242" text-anchor="end">DAC_R</text>
 <text class="t2 dim" x="204" y="278" text-anchor="end">DAC_L</text>
-<text class="t1" x="204" y="307" text-anchor="end">SPK2</text>
+<text class="t1" x="204" y="307" text-anchor="end">SPK_1</text>
 <text class="t2" x="204" y="322" text-anchor="end">speaker</text>
 <text class="t1" x="204" y="343" text-anchor="end">GND</text>
 <text class="t2" x="204" y="358" text-anchor="end">board row 13</text>
-<text class="t1" x="204" y="379" text-anchor="end">SPK1</text>
+<text class="t1" x="204" y="379" text-anchor="end">SPK_2</text>
 <text class="t2" x="204" y="394" text-anchor="end">speaker</text>
 
 <g class="t2 dim">
