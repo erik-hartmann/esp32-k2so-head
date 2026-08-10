@@ -1,7 +1,11 @@
 # Bypasses DHCP by assigning a static address on the head's subnet, tests
 # whether the ESP32 is reachable at all, then puts the adapter back on DHCP.
 #
-# Run WHILE joined to ESP32-LEDs:
+# MUST be run from an elevated (Administrator) PowerShell - assigning a static
+# IP is a privileged operation. The script checks and refuses rather than
+# failing halfway.
+#
+# Run WHILE joined to the head's AP:
 #   powershell -ExecutionPolicy Bypass -File C:\Users\ehart\esp32-k2so-head\tools\ap-static.ps1
 #
 # The revert runs in a finally block, so the adapter goes back to DHCP even if
@@ -11,6 +15,27 @@
 $alias = "Wi-Fi"
 $out = Join-Path $env:TEMP "k2so-ap-static.txt"
 $stamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+# Changing IP configuration needs elevation. Check up front and say so
+# plainly: without this the script runs, fails every step with a bare
+# "Access is denied", and still reports that it reverted to DHCP - which
+# looks like a diagnosis rather than a script that never got started.
+$identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+$principal = New-Object Security.Principal.WindowsPrincipal($identity)
+if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Host ""
+    Write-Host "This script must run as Administrator." -ForegroundColor Yellow
+    Write-Host "Assigning a static IP is a privileged operation; without elevation"
+    Write-Host "every step fails with 'Access is denied' and nothing is tested."
+    Write-Host ""
+    Write-Host "Open PowerShell with 'Run as administrator', then:"
+    Write-Host "  powershell -ExecutionPolicy Bypass -File $PSCommandPath"
+    Write-Host ""
+    "K-2SO static IP test - $stamp" | Out-File $out
+    "ABORTED: not running as Administrator - nothing was tested." | Out-File $out -Append
+    exit 1
+}
+
 "K-2SO static IP test - $stamp" | Out-File $out
 
 try {

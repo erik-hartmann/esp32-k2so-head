@@ -1,5 +1,5 @@
 # Captures everything needed to diagnose a connection to the head's soft AP.
-# Run this WHILE joined to the ESP32-LEDs network, then rejoin your normal
+# Run this WHILE joined to the head's AP (k2so-esp32), then rejoin your normal
 # WiFi. Results go to a file rather than the screen, so nothing is lost when
 # the network changes.
 #
