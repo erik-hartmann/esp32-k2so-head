@@ -39,9 +39,9 @@ Prices intentionally omitted — they move too fast to keep accurate.
 | 2 | **WS2812 7-LED ring** (4-pin: 5V, GND, DIN, DOUT) | The eyes. Sold as "7-bit RGB LED ring". 7 addressable pixels each, so `LED_STRIP_LED_COUNTS` is `{ 7, 7 }`. Separate DIN/DOUT — the two rings are **not** daisy-chained, each gets its own GPIO. | [B0C77TVKL6](https://www.amazon.com/dp/B0C77TVKL6) |
 | 1 | **PCA9685** 16-channel 12-bit I²C PWM driver | Drives the eye servos. Only 2 of 16 channels used, leaving 14 for a jaw or head pan later. Has **two** power inputs — `V+` (servo, 5 V from the rails) and `VCC` (logic, 3.3 V from the ESP32). | [B0DC2XSKF9](https://www.amazon.com/dp/B0DC2XSKF9) |
 | 2 | **MG90S servo** (metal gear) | Eye pan and tilt, via linkages. Metal gears matter here — the linkages backdrive the servo every time the head is handled. Tilt runs a widened pulse range (972–2056 µs) set in `sketch.cpp`. | [B0BWJ4RKGV](https://www.amazon.com/dp/B0BWJ4RKGV) |
-| 1 | **DFPlayer Mini** MP3 module | Audio. Serial-controlled at 9600 baud, with a built-in amp and microSD slot. *Not yet installed — next task.* | [B0F1F711ZH](https://www.amazon.com/dp/B0F1F711ZH) |
+| 1 | **DFPlayer Mini** MP3 module | Audio. Serial-controlled at 9600 baud, with a built-in amp and microSD slot. The variant received was an HW-247A clone; see the orientation and speaker-pin notes in [wiring.md](wiring.md), which differ from DFRobot's original. | [B0F1F711ZH](https://www.amazon.com/dp/B0F1F711ZH) |
 | 1 | **Speaker** for the DFPlayer | Drives directly from the DFPlayer's onboard amp — no separate amplifier needed. | [B0BWYBFPW8](https://www.amazon.com/dp/B0BWYBFPW8) |
-| 1 | **microSD card** | Small is fine; 8–32 GB, formatted FAT32. Files go in an `/mp3/` folder named `0001.mp3`…`0004.mp3` to match `AUDIO_TRACK_COUNT`. | [B0CYT352MW](https://www.amazon.com/dp/B0CYT352MW) |
+| 1 | **microSD card, 32 GB or smaller** | **FAT32 — not exFAT**, and not a 64 GB card. The DFPlayer reads neither, and fails identically to a wiring fault: silence, no error. A 16 GB card ships FAT32 already and needs no formatting. Files go in `/mp3/` as `0001.mp3`, `0002.mp3`, …, with `AUDIO_TRACK_COUNT` set to match. | [B0CYT352MW](https://www.amazon.com/dp/B0CYT352MW) |
 
 ## Passives
 

@@ -13,7 +13,9 @@ weeks; Part 2 is the version in the head now.
 
 Parts and where to buy them: see [bom.md](bom.md).
 
-> **Status:** Part 2 built and verified 2026-08-09 — worked on first power-up.
+> **Status:** complete and verified 2026-08-09. The Part 2 board worked on
+> first power-up; the DFPlayer was added the same day and audio, lights,
+> servos and Bluetooth are all confirmed working together on the finished head.
 
 ## Pin assignments
 
@@ -417,11 +419,28 @@ of one bridged output, so swapping them inverts phase, which is inaudible on a
 single speaker. Trust the silkscreen on your own module, and note the position
 relative to GND rather than the number.
 
-The microSD card needs an `mp3` folder at its root with four-digit filenames —
-`/mp3/0001.mp3` through `/mp3/0004.mp3`, matching `AUDIO_TRACK_COUNT` in the
-board config. That folder addressing is deliberate: the flat track index
-depends on the order files were physically written to the card and is not
-reliable.
+### The microSD card
+
+Files go in an `mp3` folder at the card root, named with **four digits** —
+`/mp3/0001.mp3`, `/mp3/0002.mp3`, and so on. `AUDIO_TRACK_COUNT` in the board
+config must equal how many are there. That folder addressing is deliberate:
+the flat track index depends on the order files were physically written to the
+card and is not reliable.
+
+**Format the card FAT32, and use one of 32 GB or smaller.** Two traps here,
+both of which fail the same silent way — the module simply never plays
+anything, indistinguishable from a wiring fault:
+
+- **exFAT does not work.** The DFPlayer reads FAT32 and FAT16 only. Windows
+  offers exFAT by default for larger cards and will happily format one that
+  the module cannot read at all.
+- **Cards above 32 GB are out of spec.** Windows also will not format above
+  32 GB as FAT32 through its normal dialogs, which is a useful hint that you
+  have reached for the wrong card.
+
+A 16 GB card arrives FAT32 from the factory and needs no formatting. Check
+before reformatting anything — the card in this build already held a photo
+that a reflexive format would have destroyed.
 
 ## Why the DFPlayer only needs 3 conductors
 
