@@ -169,6 +169,14 @@ servo movement is vibration. Soldering also lets you replace a nest of
 point-to-point jumpers with one power junction and three keyed connectors, so
 the head can be opened and reassembled without re-deriving what plugs where.
 
+## The finished board
+
+![Front and back of the finished interface board, showing rail terminals, the three device blocks in column G, the resistors bridging the centre channel, the GPIO screw terminals in column B, and the eight underside jumpers](perfboard-layout.svg)
+
+Everything below describes how to get there. The short version: terminals live
+at rows 1 and 15 on both rail pairs, both rail links share row 3, and the three
+devices repeat one identical four-row block down the middle of the board.
+
 ## Board and coordinate system
 
 A solderable perfboard: 15 rows, columns A–J, with a `+`/`−` rail pair on

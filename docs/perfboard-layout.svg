@@ -1,0 +1,234 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="700" height="500" role="img" aria-labelledby="title desc">
+<title id="title">K-2SO interface board — front and back, as built</title>
+<desc id="desc">Front and back views of the finished 15-row interface board. Left rails carry POWER IN at row 1, a 1000 microfarad capacitor at row 8, and the PCA9685 terminal at row 15. Right rails carry the ESP32 terminal at row 1 and a spare AUX terminal at row 15. Both rail links share row 3. Three devices sit on a uniform four-row pitch with their three-pin JST connectors in column G: LED A at rows 4 to 6, LED B at rows 8 to 10, DFPlayer at rows 12 to 14. Each device's 5V and ground jumpers leave from column J to the right rails, using a separate hole from the connector in the same node. A 330 ohm resistor bridges the centre channel on each device's third row, reaching a GPIO screw terminal in column B whose dead pin sits in the row above: GPIO25 at B6, GPIO26 at B10, GPIO17 at B14. The back carries eight horizontal wires: two rail links and six device power jumpers, with no diagonals and no crossings.</desc>
+
+<style>
+  .bg    { fill: #ffffff; }
+  .board { fill: none; stroke: #656d76; }
+  .strip { fill: none; stroke: #d0d7de; }
+  .comp  { fill: none; stroke: #656d76; }
+  .can   { fill: #eaeef2; stroke: #afb8c1; }
+  .conn  { fill: #eaeef2; stroke: #8c959f; }
+  .lead  { stroke: #9aa0a6; }
+  .res   { fill: #DCC49A; stroke: #8a7350; }
+  .t1    { fill: #1f2328; font: 600 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .t2    { fill: #57606a; font: 400 10.5px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .hd    { fill: #1f2328; font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .f5v   { fill: #d1242f; }  .s5v { stroke: #d1242f; }
+  .fgnd  { fill: #0969da; }  .sgnd { stroke: #0969da; }
+  .fsig  { fill: #1a7f37; }
+  .hole  { fill: none; stroke: #8c959f; }
+  .rule  { stroke: #d0d7de; }
+  @media (prefers-color-scheme: dark) {
+    .bg    { fill: #0d1117; }
+    .board { stroke: #8b949e; }
+    .strip { stroke: #30363d; }
+    .comp  { stroke: #8b949e; }
+    .can   { fill: #21262d; stroke: #484f58; }
+    .conn  { fill: #21262d; stroke: #6e7681; }
+    .lead  { stroke: #6e7681; }
+    .t1    { fill: #e6edf3; }
+    .t2    { fill: #9198a1; }
+    .hd    { fill: #e6edf3; }
+    .f5v   { fill: #ff7b72; }  .s5v { stroke: #ff7b72; }
+    .fgnd  { fill: #58a6ff; }  .sgnd { stroke: #58a6ff; }
+    .fsig  { fill: #3fb950; }
+    .hole  { stroke: #6e7681; }
+    .rule  { stroke: #30363d; }
+  }
+</style>
+
+<rect class="bg" x="0" y="0" width="700" height="500"/>
+
+<text class="hd" x="150" y="28" text-anchor="middle">Front (component side)</text>
+<text class="hd" x="510" y="28" text-anchor="middle">Back (mirrored)</text>
+
+<g class="t2">
+  <text x="30" y="60" text-anchor="middle">+</text><text x="44" y="60" text-anchor="middle">−</text>
+  <text x="72" y="60" text-anchor="middle">A</text><text x="86" y="60" text-anchor="middle">B</text>
+  <text x="128" y="60" text-anchor="middle">E</text><text x="170" y="60" text-anchor="middle">F</text>
+  <text x="184" y="60" text-anchor="middle">G</text><text x="226" y="60" text-anchor="middle">J</text>
+  <text x="254" y="60" text-anchor="middle">+</text><text x="268" y="60" text-anchor="middle">−</text>
+  <text x="390" y="60" text-anchor="middle">−</text><text x="404" y="60" text-anchor="middle">+</text>
+  <text x="432" y="60" text-anchor="middle">J</text><text x="474" y="60" text-anchor="middle">G</text>
+  <text x="530" y="60" text-anchor="middle">E</text><text x="572" y="60" text-anchor="middle">B</text>
+  <text x="614" y="60" text-anchor="middle">−</text><text x="628" y="60" text-anchor="middle">+</text>
+</g>
+
+<rect class="board" x="20" y="70" width="258" height="228" rx="6" stroke-width="1"/>
+<rect class="board" x="380" y="70" width="258" height="228" rx="6" stroke-width="1"/>
+
+<g class="strip" stroke-width="0.8">
+  <rect x="65" y="86" width="70" height="8" rx="4"/><rect x="163" y="86" width="70" height="8" rx="4"/>
+  <rect x="65" y="100" width="70" height="8" rx="4"/><rect x="163" y="100" width="70" height="8" rx="4"/>
+  <rect x="65" y="114" width="70" height="8" rx="4"/><rect x="163" y="114" width="70" height="8" rx="4"/>
+  <rect x="65" y="128" width="70" height="8" rx="4"/><rect x="163" y="128" width="70" height="8" rx="4"/>
+  <rect x="65" y="142" width="70" height="8" rx="4"/><rect x="163" y="142" width="70" height="8" rx="4"/>
+  <rect x="65" y="156" width="70" height="8" rx="4"/><rect x="163" y="156" width="70" height="8" rx="4"/>
+  <rect x="65" y="170" width="70" height="8" rx="4"/><rect x="163" y="170" width="70" height="8" rx="4"/>
+  <rect x="65" y="184" width="70" height="8" rx="4"/><rect x="163" y="184" width="70" height="8" rx="4"/>
+  <rect x="65" y="198" width="70" height="8" rx="4"/><rect x="163" y="198" width="70" height="8" rx="4"/>
+  <rect x="65" y="212" width="70" height="8" rx="4"/><rect x="163" y="212" width="70" height="8" rx="4"/>
+  <rect x="65" y="226" width="70" height="8" rx="4"/><rect x="163" y="226" width="70" height="8" rx="4"/>
+  <rect x="65" y="240" width="70" height="8" rx="4"/><rect x="163" y="240" width="70" height="8" rx="4"/>
+  <rect x="65" y="254" width="70" height="8" rx="4"/><rect x="163" y="254" width="70" height="8" rx="4"/>
+  <rect x="65" y="268" width="70" height="8" rx="4"/><rect x="163" y="268" width="70" height="8" rx="4"/>
+  <rect x="65" y="282" width="70" height="8" rx="4"/><rect x="163" y="282" width="70" height="8" rx="4"/>
+  <rect x="425" y="86" width="70" height="8" rx="4"/><rect x="523" y="86" width="70" height="8" rx="4"/>
+  <rect x="425" y="100" width="70" height="8" rx="4"/><rect x="523" y="100" width="70" height="8" rx="4"/>
+  <rect x="425" y="114" width="70" height="8" rx="4"/><rect x="523" y="114" width="70" height="8" rx="4"/>
+  <rect x="425" y="128" width="70" height="8" rx="4"/><rect x="523" y="128" width="70" height="8" rx="4"/>
+  <rect x="425" y="142" width="70" height="8" rx="4"/><rect x="523" y="142" width="70" height="8" rx="4"/>
+  <rect x="425" y="156" width="70" height="8" rx="4"/><rect x="523" y="156" width="70" height="8" rx="4"/>
+  <rect x="425" y="170" width="70" height="8" rx="4"/><rect x="523" y="170" width="70" height="8" rx="4"/>
+  <rect x="425" y="184" width="70" height="8" rx="4"/><rect x="523" y="184" width="70" height="8" rx="4"/>
+  <rect x="425" y="198" width="70" height="8" rx="4"/><rect x="523" y="198" width="70" height="8" rx="4"/>
+  <rect x="425" y="212" width="70" height="8" rx="4"/><rect x="523" y="212" width="70" height="8" rx="4"/>
+  <rect x="425" y="226" width="70" height="8" rx="4"/><rect x="523" y="226" width="70" height="8" rx="4"/>
+  <rect x="425" y="240" width="70" height="8" rx="4"/><rect x="523" y="240" width="70" height="8" rx="4"/>
+  <rect x="425" y="254" width="70" height="8" rx="4"/><rect x="523" y="254" width="70" height="8" rx="4"/>
+  <rect x="425" y="268" width="70" height="8" rx="4"/><rect x="523" y="268" width="70" height="8" rx="4"/>
+  <rect x="425" y="282" width="70" height="8" rx="4"/><rect x="523" y="282" width="70" height="8" rx="4"/>
+</g>
+
+<rect class="f5v"  x="24"  y="80" width="12" height="214" rx="5" opacity=".85"/>
+<rect class="fgnd" x="38"  y="80" width="12" height="214" rx="5" opacity=".85"/>
+<rect class="f5v"  x="248" y="80" width="12" height="214" rx="5" opacity=".85"/>
+<rect class="fgnd" x="262" y="80" width="12" height="214" rx="5" opacity=".85"/>
+<rect class="fgnd" x="384" y="80" width="12" height="214" rx="5" opacity=".85"/>
+<rect class="f5v"  x="398" y="80" width="12" height="214" rx="5" opacity=".85"/>
+<rect class="fgnd" x="608" y="80" width="12" height="214" rx="5" opacity=".85"/>
+<rect class="f5v"  x="622" y="80" width="12" height="214" rx="5" opacity=".85"/>
+
+<g fill="none" stroke-width="1.4" stroke-dasharray="3 2" stroke-linecap="round">
+  <line class="s5v"  x1="30"  y1="115" x2="254" y2="115"/>
+  <line class="sgnd" x1="44"  y1="121" x2="268" y2="121"/>
+  <line class="s5v"  x1="226" y1="132" x2="254" y2="132"/>
+  <line class="sgnd" x1="226" y1="146" x2="268" y2="146"/>
+  <line class="s5v"  x1="226" y1="188" x2="254" y2="188"/>
+  <line class="sgnd" x1="226" y1="202" x2="268" y2="202"/>
+  <line class="s5v"  x1="226" y1="244" x2="254" y2="244"/>
+  <line class="sgnd" x1="226" y1="258" x2="268" y2="258"/>
+</g>
+
+<rect class="comp" x="22" y="82" width="30" height="26" rx="3" stroke-width="1"/>
+<text class="t2" x="58" y="97">PWR IN</text>
+<rect class="comp" x="22" y="278" width="30" height="26" rx="3" stroke-width="1"/>
+<text class="t2" x="58" y="297">PCA9685</text>
+<rect class="comp" x="246" y="82" width="30" height="26" rx="3" stroke-width="1"/>
+<text class="t2" x="242" y="97" text-anchor="end">ESP32</text>
+<rect class="comp" x="246" y="278" width="30" height="26" rx="3" stroke-width="1"/>
+<text class="t2" x="242" y="297" text-anchor="end">AUX</text>
+
+<circle class="can" cx="37" cy="188" r="24" stroke-width="1"/>
+<text class="t2" x="66" y="192">1000µF</text>
+
+<rect class="conn" x="166" y="126" width="36" height="40" rx="3" stroke-width="1"/>
+<rect class="conn" x="166" y="182" width="36" height="40" rx="3" stroke-width="1"/>
+<rect class="conn" x="166" y="238" width="36" height="40" rx="3" stroke-width="1"/>
+<text class="t2" x="208" y="137">LED A</text>
+<text class="t2" x="208" y="193">LED B</text>
+<text class="t2" x="208" y="249">DFPlayer</text>
+
+<g class="lead" stroke-width="1.4">
+  <line x1="128" y1="160" x2="170" y2="160"/>
+  <line x1="128" y1="216" x2="170" y2="216"/>
+  <line x1="128" y1="272" x2="170" y2="272"/>
+</g>
+<g class="res" stroke-width="0.7">
+  <rect x="137" y="154" width="24" height="13" rx="5"/>
+  <rect x="137" y="210" width="24" height="13" rx="5"/>
+  <rect x="137" y="266" width="24" height="13" rx="5"/>
+</g>
+<g>
+  <rect x="141" y="154" width="2.5" height="13" fill="#EF6C00"/><rect x="145" y="154" width="2.5" height="13" fill="#EF6C00"/><rect x="149" y="154" width="2.5" height="13" fill="#6B4423"/><rect x="155" y="154" width="2.5" height="13" fill="#C9A227"/>
+  <rect x="141" y="210" width="2.5" height="13" fill="#EF6C00"/><rect x="145" y="210" width="2.5" height="13" fill="#EF6C00"/><rect x="149" y="210" width="2.5" height="13" fill="#6B4423"/><rect x="155" y="210" width="2.5" height="13" fill="#C9A227"/>
+  <rect x="141" y="266" width="2.5" height="13" fill="#EF6C00"/><rect x="145" y="266" width="2.5" height="13" fill="#EF6C00"/><rect x="149" y="266" width="2.5" height="13" fill="#6B4423"/><rect x="155" y="266" width="2.5" height="13" fill="#C9A227"/>
+</g>
+
+<g class="comp" stroke-width="1" opacity=".8">
+  <rect x="66" y="139" width="40" height="28" rx="3"/>
+  <rect x="66" y="195" width="40" height="28" rx="3"/>
+  <rect x="66" y="251" width="40" height="28" rx="3"/>
+</g>
+<g class="hole" stroke-width="1.3">
+  <circle cx="86" cy="146" r="3.5"/><circle cx="86" cy="202" r="3.5"/><circle cx="86" cy="258" r="3.5"/>
+</g>
+<circle class="fsig" cx="86" cy="160" r="4"/>
+<circle class="fsig" cx="86" cy="216" r="4"/>
+<circle class="fsig" cx="86" cy="272" r="4"/>
+<g class="t2">
+  <text x="60" y="164" text-anchor="end">25</text>
+  <text x="60" y="220" text-anchor="end">26</text>
+  <text x="60" y="276" text-anchor="end">17</text>
+</g>
+
+<circle class="f5v" cx="184" cy="132" r="3.5"/><circle class="fgnd" cx="184" cy="146" r="3.5"/><circle class="fsig" cx="184" cy="160" r="3.5"/>
+<circle class="f5v" cx="184" cy="188" r="3.5"/><circle class="fgnd" cx="184" cy="202" r="3.5"/><circle class="fsig" cx="184" cy="216" r="3.5"/>
+<circle class="f5v" cx="184" cy="244" r="3.5"/><circle class="fgnd" cx="184" cy="258" r="3.5"/><circle class="fsig" cx="184" cy="272" r="3.5"/>
+<circle class="f5v" cx="226" cy="132" r="3.5"/><circle class="fgnd" cx="226" cy="146" r="3.5"/>
+<circle class="f5v" cx="226" cy="188" r="3.5"/><circle class="fgnd" cx="226" cy="202" r="3.5"/>
+<circle class="f5v" cx="226" cy="244" r="3.5"/><circle class="fgnd" cx="226" cy="258" r="3.5"/>
+<circle class="f5v" cx="30" cy="188" r="3.5"/><circle class="fgnd" cx="44" cy="188" r="3.5"/>
+
+<g fill="none" stroke-width="2.4" stroke-linecap="round">
+  <line class="s5v"  x1="628" y1="115" x2="404" y2="115"/>
+  <line class="sgnd" x1="614" y1="121" x2="390" y2="121"/>
+  <line class="s5v"  x1="432" y1="132" x2="404" y2="132"/>
+  <line class="sgnd" x1="432" y1="146" x2="390" y2="146"/>
+  <line class="s5v"  x1="432" y1="188" x2="404" y2="188"/>
+  <line class="sgnd" x1="432" y1="202" x2="390" y2="202"/>
+  <line class="s5v"  x1="432" y1="244" x2="404" y2="244"/>
+  <line class="sgnd" x1="432" y1="258" x2="390" y2="258"/>
+</g>
+<circle class="f5v" cx="628" cy="115" r="3.5"/><circle class="f5v" cx="404" cy="115" r="3.5"/>
+<circle class="fgnd" cx="614" cy="121" r="3.5"/><circle class="fgnd" cx="390" cy="121" r="3.5"/>
+<circle class="f5v" cx="432" cy="132" r="3.5"/><circle class="f5v" cx="404" cy="132" r="3.5"/>
+<circle class="fgnd" cx="432" cy="146" r="3.5"/><circle class="fgnd" cx="390" cy="146" r="3.5"/>
+<circle class="f5v" cx="432" cy="188" r="3.5"/><circle class="f5v" cx="404" cy="188" r="3.5"/>
+<circle class="fgnd" cx="432" cy="202" r="3.5"/><circle class="fgnd" cx="390" cy="202" r="3.5"/>
+<circle class="f5v" cx="432" cy="244" r="3.5"/><circle class="f5v" cx="404" cy="244" r="3.5"/>
+<circle class="fgnd" cx="432" cy="258" r="3.5"/><circle class="fgnd" cx="390" cy="258" r="3.5"/>
+<g class="hole" stroke-width="1.1" opacity=".55">
+  <circle cx="474" cy="132" r="3"/><circle cx="474" cy="146" r="3"/><circle cx="474" cy="160" r="3"/>
+  <circle cx="474" cy="188" r="3"/><circle cx="474" cy="202" r="3"/><circle cx="474" cy="216" r="3"/>
+  <circle cx="474" cy="244" r="3"/><circle cx="474" cy="258" r="3"/><circle cx="474" cy="272" r="3"/>
+</g>
+<text class="t2" x="510" y="316" text-anchor="middle">8 wires · all horizontal · no crossings</text>
+
+<g class="t2">
+  <text x="14" y="94" text-anchor="end">1</text>
+  <text x="14" y="122" text-anchor="end">3</text>
+  <text x="14" y="136" text-anchor="end">4</text>
+  <text x="14" y="150" text-anchor="end">5</text>
+  <text x="14" y="164" text-anchor="end">6</text>
+  <text x="14" y="192" text-anchor="end">8</text>
+  <text x="14" y="220" text-anchor="end">10</text>
+  <text x="14" y="248" text-anchor="end">12</text>
+  <text x="14" y="276" text-anchor="end">14</text>
+  <text x="14" y="290" text-anchor="end">15</text>
+  <text x="374" y="94" text-anchor="end">1</text>
+  <text x="374" y="122" text-anchor="end">3</text>
+  <text x="374" y="164" text-anchor="end">6</text>
+  <text x="374" y="220" text-anchor="end">10</text>
+  <text x="374" y="276" text-anchor="end">14</text>
+</g>
+
+<line class="rule" x1="20" y1="336" x2="680" y2="336" stroke-width="1"/>
+
+<text class="t1" x="20" y="358">Per device — uniform 4-row block</text>
+<text class="t2" x="20" y="376">rows n / n+1 · JST 5 V and GND in column G, jumpered from column J to the right rails</text>
+<text class="t2" x="20" y="392">row n+2 · JST signal in G, 330 Ω bridging E↔F, landing on the screw terminal at B</text>
+<text class="t2" x="20" y="408">row n+3 · left spare</text>
+
+<text class="t1" x="20" y="436">GPIO terminals — dead pin above the live one</text>
+<text class="t2" x="20" y="454">B5+B6 → GPIO25 · B9+B10 → GPIO26 · B13+B14 → GPIO17</text>
+<text class="t2" x="20" y="470">The dead pin's row is that device's GND row, whose A–E half is unused — power lands only in F–J</text>
+
+<circle class="f5v" cx="470" cy="352" r="4"/><text class="t2" x="482" y="356">5 V</text>
+<circle class="fgnd" cx="470" cy="372" r="4"/><text class="t2" x="482" y="376">ground</text>
+<circle class="fsig" cx="470" cy="392" r="4"/><text class="t2" x="482" y="396">signal</text>
+<circle class="hole" cx="470" cy="412" r="3.5" stroke-width="1.3"/><text class="t2" x="482" y="416">dead pin</text>
+<line class="s5v" x1="560" y1="352" x2="588" y2="352" stroke-width="1.4" stroke-dasharray="3 2"/><text class="t2" x="596" y="356">jumper (on back)</text>
+<rect class="res" x="562" y="366" width="24" height="12" rx="4" stroke-width="0.7"/><text class="t2" x="596" y="376">330 Ω ×3</text>
+</svg>
