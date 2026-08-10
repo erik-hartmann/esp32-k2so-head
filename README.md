@@ -8,6 +8,16 @@ through linkages, and a DFPlayer Mini handles audio. With no controller
 connected the head runs autonomous idle behavior — it looks around, holds the
 occasional stare, and blinks.
 
+**The head itself is not my design, and neither is the eye mechanism.** The
+printable model is Droid Division's
+[Spacebob's Security Droid Inspired Head + Stand](https://www.droiddivision.com/product/spacebobs-security-droid-inspired-head-stand-printable-fan-art-files-2/)
+fan-art file set, which includes the extra parts for animatronic eyes. The eye
+movement and its electronics largely follow **Chris Sergent's K2SO eye
+movement instructions**, distributed in Droid Division's
+[documentation folder](https://drive.google.com/drive/folders/1zHI-dFQyRCWWQNP9ya1oT1ZpL5VMhbYT).
+What this repository adds is the firmware, the gamepad control, and the wiring
+that ties it together.
+
 Built for someone doing this for the first time. The wiring is documented in
 two stages, breadboard then soldered board, and the mistakes that cost real
 debugging time are written down rather than quietly fixed.
@@ -157,9 +167,15 @@ servos, but anyone in radio range can read them here.
 
 ## Attribution
 
-This project is a thin layer over a great deal of other people's work — the
-Bluetooth stack, the Arduino compatibility layer, the timing-critical LED
-driver. It began as a clone of Ricardo Quesada's
+The physical build comes from **[Droid Division](https://www.droiddivision.com/product/spacebobs-security-droid-inspired-head-stand-printable-fan-art-files-2/)**
+— the printable head and stand, plus the animatronic eye parts — and the eye
+mechanism and electronics largely follow **Chris Sergent's K2SO eye movement
+instructions** in Droid Division's
+[documentation folder](https://drive.google.com/drive/folders/1zHI-dFQyRCWWQNP9ya1oT1ZpL5VMhbYT).
+
+The software is likewise a thin layer over a great deal of other people's work
+— the Bluetooth stack, the Arduino compatibility layer, the timing-critical
+LED driver. It began as a clone of Ricardo Quesada's
 [esp-idf-arduino-bluepad32-template](https://github.com/ricardoquesada/esp-idf-arduino-bluepad32-template)
 and is built on [Bluepad32](https://github.com/ricardoquesada/bluepad32),
 [BTstack](https://github.com/bluekitchen/btstack), ESP-IDF, arduino-esp32 and

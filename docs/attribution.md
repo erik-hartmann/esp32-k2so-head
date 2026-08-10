@@ -1,12 +1,31 @@
 # Attribution
 
 This project is a thin layer of application code on top of a lot of other
-people's work. Nearly everything difficult here — the Bluetooth stack, the
-Arduino compatibility layer, the timing-critical LED driver — comes from the
-projects below.
+people's work, and it hangs inside a head somebody else designed. Nearly
+everything difficult here — the printed model, the eye mechanism, the
+Bluetooth stack, the Arduino compatibility layer, the timing-critical LED
+driver — comes from the people and projects below.
 
-Licenses are summarised in [../LICENSE](../LICENSE). Exact vendored versions
-are in [../components/VENDORED.md](../components/VENDORED.md).
+Licenses for the software are summarised in [../LICENSE](../LICENSE). Exact
+vendored versions are in [../components/VENDORED.md](../components/VENDORED.md).
+
+## The physical build
+
+**[Droid Division](https://www.droiddivision.com/)** — *Spacebob's Security
+Droid Inspired Head + Stand*, a
+[printable fan-art file set](https://www.droiddivision.com/product/spacebobs-security-droid-inspired-head-stand-printable-fan-art-files-2/)
+that includes the extra parts for animatronic eyes. The head, the stand and
+the eye assembly this firmware moves are all theirs. Nothing here would exist
+without it.
+
+**Chris Sergent** — the *K2SO Eye Movement* instructions, distributed in Droid
+Division's public
+[documentation folder](https://drive.google.com/drive/folders/1zHI-dFQyRCWWQNP9ya1oT1ZpL5VMhbYT)
+as `ChrisSergentK2SOEyeMovementInfo2025.pdf`. The electronics here largely
+follow that guide — the PCA9685 driving two servos through linkages for eye
+pan and tilt is his arrangement, not something arrived at independently. That
+folder also carries `DDs Intro to Animatronics.pdf` and
+`BenRiessCodeLinks.pdf`, both worth reading before starting.
 
 ## The foundation
 
@@ -63,6 +82,10 @@ For clarity about what this repository actually adds, everything in `main/`
 except `main.c` is project code: the board-config abstraction, the LED
 controller and 13 lighting patterns, the eased servo motion with autonomous
 idle behavior, the non-blocking DFPlayer driver, the soft-AP web UI, and the
-control mapping. Plus the hardware design in `docs/`.
+control mapping. Plus the interface board design in `docs/`.
 
-That is a small fraction of what gets flashed onto the chip.
+That is a small fraction of what gets flashed onto the chip, and a smaller
+fraction still of what stands on the shelf. The head, the eye mechanism and
+the servo arrangement driving it are Droid Division's and Chris Sergent's
+work; this is the firmware that animates them, and the wiring that groups the
+cables into something serviceable.
