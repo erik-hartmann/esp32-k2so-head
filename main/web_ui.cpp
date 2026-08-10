@@ -145,7 +145,15 @@ void WebUI::start() {
         return;
     }
     WiFi.mode(WIFI_AP);
-    WiFi.softAP(kApSsid, kApPassword);
+    if (!WiFi.softAP(kApSsid, kApPassword)) {
+        // Leaving sRunning false matters beyond tidiness: the caller reports
+        // success or failure to the user from isRunning(), so setting it
+        // optimistically means a failed AP is indistinguishable from a
+        // working one until you go looking for the network.
+        WiFi.mode(WIFI_OFF);
+        Console.println("Web UI: soft AP failed to start — radio back off");
+        return;
+    }
     sServer.begin();
     sRunning = true;
     Console.printf("Web UI up: join WiFi \"%s\" (password \"%s\"), then browse to http://%s/\n", kApSsid,

@@ -110,6 +110,37 @@ uint32_t sLastVolumeChangeMs = 0;
 uint16_t sCurrentAudioTrack = 0;
 uint8_t sBrightnessBeforeOff = 200;
 
+// Two quick flashes confirming an admin toggle actually landed: green when
+// the access point has just come up, red when it has gone down. Without this
+// the button is undebuggable by feel — a 1s hold with no feedback gives you
+// no way to tell a missed press from one you released too early.
+//
+// Blocking, deliberately. This is a once-in-a-while admin action on an
+// otherwise idle head, and a non-blocking version would need a state machine
+// in loop() for something that runs for a third of a second.
+void flashAdminAck(bool apNowRunning) {
+    const uint8_t savedBrightness = LedController::brightness();
+    // Degrees, not Adafruit's 16-bit hue — LedController::fillAllHSV converts.
+    const uint16_t hue = apNowRunning ? 120 : 0;  // green : red
+
+    // Force both multipliers open, or the flash is invisible when the lights
+    // are switched off at X or a blink happens to be in flight.
+    LedController::setBlinkLevel(255);
+    LedController::setBrightness(160);
+
+    for (int i = 0; i < 2; i++) {
+        LedController::fillAllHSV(hue, 255, 255);
+        LedController::showAll();
+        delay(120);
+        LedController::clearAll();
+        LedController::showAll();
+        delay(90);
+    }
+
+    LedController::setBrightness(savedBrightness);
+    // Pixels need no restoring — LightEffects::update() repaints every frame.
+}
+
 }  // namespace
 
 void setup() {
@@ -312,6 +343,11 @@ void loop() {
         uint32_t now = millis();
         if (sAdminPressedAtMs == 0) {
             sAdminPressedAtMs = now;
+            // Logged on the press, not just on the toggle, so a press that is
+            // released too early is still visible in the serial log. Without
+            // this there is no way to tell "the pin never went low" from
+            // "you let go at 800ms".
+            Console.printf("Admin: button down — hold %ums to toggle\n", kAdminHoldMs);
         } else if (!sAdminHoldFired && (now - sAdminPressedAtMs) >= kAdminHoldMs) {
             if (WebUI::isRunning()) {
                 // OTA first: it holds a socket on an interface WebUI::stop()
@@ -327,8 +363,13 @@ void loop() {
             // Latch until release, so one hold is one toggle rather than one
             // per loop() tick for as long as the button is down.
             sAdminHoldFired = true;
+            flashAdminAck(WebUI::isRunning());
         }
     } else {
+        if (sAdminPressedAtMs != 0 && !sAdminHoldFired) {
+            Console.printf("Admin: released after %ums — too short, nothing toggled\n",
+                           millis() - sAdminPressedAtMs);
+        }
         sAdminPressedAtMs = 0;
         sAdminHoldFired = false;
     }
