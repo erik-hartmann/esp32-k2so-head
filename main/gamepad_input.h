@@ -28,6 +28,12 @@ struct GamepadState {
     bool l1 = false;  // left bumper
     bool r1 = false;  // right bumper
 
+    // "Misc" buttons — on an Xbox controller, View (the two-panes icon) and
+    // Menu (the three-lines icon). Useful for functions that want a button of
+    // their own rather than a combo, once the face buttons are spoken for.
+    bool select = false;  // View / Back / Share
+    bool start = false;   // Menu / Options
+
     bool dpadUp = false;
     bool dpadDown = false;
     bool dpadLeft = false;

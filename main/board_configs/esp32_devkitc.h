@@ -27,10 +27,26 @@
 // WROVER, move these to e.g. 32/33.
 #define AUDIO_RX_GPIO 16
 #define AUDIO_TX_GPIO 17
-#define AUDIO_TRACK_COUNT 4  // how many /mp3/NNNN.mp3 files are on the card
+
+// How many /mp3/NNNN.mp3 files are on the card. Must be kept in step with the
+// card by hand: the module can report its own file count, but only over its TX
+// pin, which this build does not wire (3-conductor cable, write-only driver).
+// See AudioPlayer::trackCount() for what making this automatic would cost.
+#define AUDIO_TRACK_COUNT 16
+
+// Admin button — held to toggle the WiFi AP and web UI. GPIO0 is the
+// DevKitC's on-board BOOT button: already fitted, already pulled up, and free
+// for general input once the board is running. (Holding it *during reset*
+// still drops the chip into the serial bootloader; that is a boot-time
+// behaviour and unrelated to reading the pin afterwards.)
+//
+// Deliberately not on the gamepad. Enabling the web UI is a setup action, not
+// something to do mid-performance, and it should work when no controller is
+// paired — which is often exactly when you want the web UI.
+#define ADMIN_BUTTON_GPIO 0
 
 // Reserved for components you add later (uncomment and wire up as needed).
 // Keeping the names here even before they're used documents which pins on
 // this specific board are already spoken for (GPIO25/GPIO26 by the LEDs,
-// GPIO21/GPIO22 by I2C, GPIO16/GPIO17 by the DFPlayer) and which are free.
-// #define BUTTON_GPIO      -1
+// GPIO21/GPIO22 by I2C, GPIO16/GPIO17 by the DFPlayer, GPIO0 by the admin
+// button) and which are free.

@@ -23,8 +23,17 @@ namespace AudioPlayer {
 // lazily on the first play() rather than stalling setup().
 void begin(int rxGpio, int txGpio);
 
-// 0..30. The module is loud; 20 is a reasonable starting point.
+// 0..30, clamped. The module is loud; 20 is a reasonable starting point.
 void setVolume(uint8_t volume);
+
+// Last value passed to setVolume(), after clamping. Callers stepping the
+// volume up and down should read this rather than tracking their own copy,
+// so the two cannot drift apart.
+uint8_t volume();
+
+// Highest track number the caller should ask for. See kMaxTrack in the .cpp
+// for why this is a fixed number rather than something read off the card.
+uint16_t trackCount();
 
 // Plays /mp3/NNNN.mp3. Track numbering starts at 1.
 void play(uint16_t track);

@@ -39,8 +39,14 @@ debugging time are written down rather than quietly fixed.
 | X | Lights off and on, remembering brightness; also parks idle motion |
 | Y | Step the default accent color through the palette |
 | Y, double-clicked | Pin the current color as the default, until reboot |
-| D-pad Up | Toggle the WiFi AP and web UI |
-| D-pad Down | Play the next audio clip |
+| D-pad Up / Down | Audio volume up / down, repeating while held; replays the current clip on release |
+| D-pad Left / Right | Step through the audio clips, playing each as selected |
+| Menu | Replay the currently selected clip |
+
+The WiFi access point and web UI are **not** on the gamepad. Hold the board's
+admin button — GPIO0, the DevKitC's on-board BOOT button — for one second to
+toggle them. Bringing up an access point is a setup action rather than a
+performance one, and it needs to work when no controller is paired.
 
 The controller must be a **Bluetooth** Xbox model (2016 or later). The 2013
 controller uses a proprietary radio and will not pair.

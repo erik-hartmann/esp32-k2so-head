@@ -23,9 +23,18 @@
 //     than mapped straight through. With no controller connected the eyes
 //     run autonomous idle behavior instead — see eye_motion.cpp, which is
 //     also where you'd swap the axes or flip a direction for your linkage.
-//   - D-pad Up: toggle the WiFi access point and web UI, which start OFF.
-//   - D-pad Down: play the next audio clip (if a DFPlayer is configured —
-//     see AUDIO_RX_GPIO in the active board_config.h).
+//   - D-pad Up / Down: audio volume up/down, repeating while held (if a
+//     DFPlayer is configured — see AUDIO_RX_GPIO in the active
+//     board_config.h). On release, the selected clip replays at the new level
+//     so it can be judged by ear.
+//   - D-pad Left / Right: step back/forward through the audio clips, playing
+//     each as it is selected and wrapping around at either end.
+//   - Menu button (the three-lines icon): replay the currently selected clip.
+// The WiFi access point and web UI have no gamepad control at all. They are
+// toggled by holding the board's admin button (ADMIN_BUTTON_GPIO in the active
+// board_config.h — the DevKitC's BOOT button), because bringing up an access
+// point is a setup action rather than a performance one, and it needs to work
+// when no controller is paired.
 // Web controls (see web_ui.cpp), once enabled: pick any pattern directly,
 // set the shared accent color, or set brightness — all from a phone/laptop
 // browser. Gamepad and web input are peers: both just call into
@@ -73,14 +82,31 @@ constexpr bool kServoZeroingMode = false;
 constexpr int kBrightnessStepPerTick = 6;  // out of 0..255, per loop() tick while held
 constexpr uint32_t kDoubleClickWindowMs = 400;
 
+// Volume repeats while held rather than stepping once per press, but is rate
+// limited: loop() runs every ~30ms, and pushing a serial command down to the
+// DFPlayer that often would flood a link the module cannot drain that fast.
+constexpr int kVolumeStep = 1;               // out of 0..30
+constexpr uint32_t kVolumeRepeatMs = 120;
+
+// The admin button toggles on a deliberate hold rather than a tap, so a
+// brushed button can't silently bring the access point up mid-show.
+constexpr uint32_t kAdminHoldMs = 1000;
+
 bool sL1WasPressed = false;
 bool sR1WasPressed = false;
 bool sXWasPressed = false;
 bool sYWasPressed = false;
-bool sDpadUpWasPressed = false;
-bool sDpadDownWasPressed = false;
+bool sDpadLeftWasPressed = false;
+bool sDpadRightWasPressed = false;
+bool sStartWasPressed = false;
+bool sVolumeAdjusted = false;
+uint32_t sAdminPressedAtMs = 0;
+bool sAdminHoldFired = false;
 uint32_t sLastYPressMs = 0;
-uint16_t sNextAudioTrack = 1;
+uint32_t sLastVolumeChangeMs = 0;
+// 0 means "nothing selected yet", so the first Right press starts at track 1
+// and the first Left press wraps to the last track.
+uint16_t sCurrentAudioTrack = 0;
 uint8_t sBrightnessBeforeOff = 200;
 
 }  // namespace
@@ -101,6 +127,12 @@ void setup() {
     Console.printf("Light effect: %s\n", LightEffects::currentName());
 
     WebUI::begin();
+
+#ifdef ADMIN_BUTTON_GPIO
+    pinMode(ADMIN_BUTTON_GPIO, INPUT_PULLUP);
+    Console.printf("Admin button on GPIO%d: hold %ums to toggle the WiFi AP and web UI\n",
+                   ADMIN_BUTTON_GPIO, kAdminHoldMs);
+#endif
 
 #ifdef AUDIO_RX_GPIO
     AudioPlayer::begin(AUDIO_RX_GPIO, AUDIO_TX_GPIO);
@@ -183,27 +215,64 @@ void loop() {
         }
         sYWasPressed = gp.y;
 
-        // D-pad Up toggles the WiFi AP and web UI. Off by default because an
-        // idle soft-AP alongside the BT stack is the biggest current draw
-        // here, and most sessions are gamepad-only.
-        if (gp.dpadUp && !sDpadUpWasPressed) {
-            if (WebUI::isRunning()) {
-                WebUI::stop();
-            } else {
-                WebUI::start();
-            }
-        }
-        sDpadUpWasPressed = gp.dpadUp;
-
 #ifdef AUDIO_RX_GPIO
-        // D-pad Down plays the next clip, cycling through the card. Sequential
-        // rather than random so each file can be verified on first setup —
-        // swap in random(1, AUDIO_TRACK_COUNT + 1) once they're all confirmed.
-        if (gp.dpadDown && !sDpadDownWasPressed) {
-            AudioPlayer::play(sNextAudioTrack);
-            sNextAudioTrack = (sNextAudioTrack % AUDIO_TRACK_COUNT) + 1;
+        // D-pad Up/Down ramp the volume while held. Not edge-triggered: the
+        // module's range is 0..30, and stepping once per press would mean
+        // thirty presses to cross it.
+        if (gp.dpadUp || gp.dpadDown) {
+            uint32_t now = millis();
+            if (now - sLastVolumeChangeMs >= kVolumeRepeatMs) {
+                int next = static_cast<int>(AudioPlayer::volume()) +
+                           (gp.dpadUp ? kVolumeStep : -kVolumeStep);
+                if (next < 0) {
+                    next = 0;
+                } else if (next > 30) {
+                    next = 30;
+                }
+                AudioPlayer::setVolume(static_cast<uint8_t>(next));
+                sLastVolumeChangeMs = now;
+                sVolumeAdjusted = true;
+            }
+        } else if (sVolumeAdjusted) {
+            // Replay once the direction is released, so the new level can be
+            // heard. Deliberately not on every step: the ramp repeats every
+            // kVolumeRepeatMs, and restarting the clip that often would just
+            // stutter. A change made while something is already playing is
+            // audible immediately anyway — the module applies volume live.
+            sVolumeAdjusted = false;
+            if (sCurrentAudioTrack == 0) {
+                sCurrentAudioTrack = 1;
+            }
+            AudioPlayer::play(sCurrentAudioTrack);
         }
-        sDpadDownWasPressed = gp.dpadDown;
+
+        // D-pad Left/Right step through the clips and play each on selection,
+        // wrapping at both ends. Edge-triggered so holding a direction doesn't
+        // restart a clip every frame.
+        const uint16_t trackCount = AudioPlayer::trackCount();
+        if (gp.dpadRight && !sDpadRightWasPressed) {
+            sCurrentAudioTrack = (sCurrentAudioTrack % trackCount) + 1;
+            AudioPlayer::play(sCurrentAudioTrack);
+        }
+        if (gp.dpadLeft && !sDpadLeftWasPressed) {
+            sCurrentAudioTrack = (sCurrentAudioTrack <= 1) ? trackCount : sCurrentAudioTrack - 1;
+            AudioPlayer::play(sCurrentAudioTrack);
+        }
+        sDpadRightWasPressed = gp.dpadRight;
+        sDpadLeftWasPressed = gp.dpadLeft;
+
+        // Menu replays whatever is currently selected, which stepping alone
+        // cannot do — Left then Right would land you back on the same track
+        // but play its neighbour on the way.
+        if (gp.start && !sStartWasPressed) {
+            // Nothing stepped to yet, so treat the first press as selecting
+            // track 1 rather than doing nothing at all.
+            if (sCurrentAudioTrack == 0) {
+                sCurrentAudioTrack = 1;
+            }
+            AudioPlayer::play(sCurrentAudioTrack);
+        }
+        sStartWasPressed = gp.start;
 #endif
 
         // A/B ramp brightness down/up while held.
@@ -220,14 +289,40 @@ void loop() {
         sR1WasPressed = false;
         sXWasPressed = false;
         sYWasPressed = false;
-        sDpadUpWasPressed = false;
-        sDpadDownWasPressed = false;
+        sDpadLeftWasPressed = false;
+        sDpadRightWasPressed = false;
+        sStartWasPressed = false;
         sLastYPressMs = 0;
         // No triggers to read — leave both sides at full brightness rather
         // than stuck at whatever dim level they were last at.
         LedController::setStripDim(0, 255);
         LedController::setStripDim(1, 255);
     }
+
+#ifdef ADMIN_BUTTON_GPIO
+    // Checked whether or not a gamepad is connected — needing the web UI with
+    // no controller paired is a normal case, and arguably the main one.
+    // Active low: the pin idles high on its pull-up and is grounded when the
+    // button is down.
+    if (digitalRead(ADMIN_BUTTON_GPIO) == LOW) {
+        uint32_t now = millis();
+        if (sAdminPressedAtMs == 0) {
+            sAdminPressedAtMs = now;
+        } else if (!sAdminHoldFired && (now - sAdminPressedAtMs) >= kAdminHoldMs) {
+            if (WebUI::isRunning()) {
+                WebUI::stop();
+            } else {
+                WebUI::start();
+            }
+            // Latch until release, so one hold is one toggle rather than one
+            // per loop() tick for as long as the button is down.
+            sAdminHoldFired = true;
+        }
+    } else {
+        sAdminPressedAtMs = 0;
+        sAdminHoldFired = false;
+    }
+#endif
 
 #ifdef I2C_SDA_GPIO
     // Runs in both states: drives the servos from the right stick when a

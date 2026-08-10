@@ -59,6 +59,8 @@ bool GamepadInput::update() {
     sState.y = sController->y();
     sState.l1 = sController->l1();
     sState.r1 = sController->r1();
+    sState.select = sController->miscSelect();
+    sState.start = sController->miscStart();
 
     // Decoded here so Bluepad32's DPAD_* bit constants stay inside this file.
     uint8_t dpad = sController->dpad();

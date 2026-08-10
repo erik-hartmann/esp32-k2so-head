@@ -4,6 +4,8 @@
 #include <Bluepad32.h>
 #include <HardwareSerial.h>
 
+#include "board_config.h"
+
 namespace {
 
 constexpr uint32_t kBaud = 9600;  // DFPlayer's fixed rate
@@ -79,6 +81,26 @@ void AudioPlayer::setVolume(uint8_t volume) {
     if (sInitSent) {
         sendCommand(kCmdSetVolume, sVolume);
     }
+}
+
+uint8_t AudioPlayer::volume() {
+    return sVolume;
+}
+
+uint16_t AudioPlayer::trackCount() {
+    // Fixed, not discovered. The DFPlayer *can* report its file count —
+    // command 0x48 — but the answer comes back on the module's TX pin, and
+    // this build deliberately does not wire it: the cable is a 3-conductor
+    // JST (5V / GND / RX) and this driver never reads a reply, so nothing can
+    // stall the loop that also drives the servos and the Bluetooth stack.
+    //
+    // Making this genuinely dynamic therefore needs hardware, not just code:
+    // a 4th conductor from the DFPlayer's TX (pin 3) to AUDIO_RX_GPIO, plus a
+    // non-blocking reader for the 10-byte reply frames. Until then this must
+    // match the number of /mp3/NNNN.mp3 files on the card. Asking for a track
+    // above the count is harmless — the module simply ignores it — but the
+    // press looks broken, because there is no reply to tell us it failed.
+    return AUDIO_TRACK_COUNT;
 }
 
 void AudioPlayer::play(uint16_t track) {
