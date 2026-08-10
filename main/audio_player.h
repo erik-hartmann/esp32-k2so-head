@@ -35,8 +35,25 @@ uint8_t volume();
 // for why this is a fixed number rather than something read off the card.
 uint16_t trackCount();
 
-// Plays /mp3/NNNN.mp3. Track numbering starts at 1.
+// Plays /mp3/NNNN.mp3. Track numbering starts at 1. Also becomes the
+// currentTrack(), whoever asked for it.
 void play(uint16_t track);
+
+// The track most recently played, or 0 if nothing has played since boot.
+//
+// Selection lives here rather than in the caller so the gamepad and the web
+// UI are genuinely peers: stepping with the D-pad and tapping a track in the
+// browser move the same cursor, instead of each keeping a private idea of
+// where it is.
+uint16_t currentTrack();
+
+// Step and play, wrapping at both ends.
+void playNext();
+void playPrevious();
+
+// Replay the current selection. With nothing selected yet this starts at
+// track 1, so the call always does something audible.
+void replay();
 
 void stop();
 

@@ -5,8 +5,13 @@
 #include <WebServer.h>
 #include <WiFi.h>
 
+#include "board_config.h"
 #include "led_controller.h"
 #include "light_effects.h"
+
+#ifdef AUDIO_RX_GPIO
+#include "audio_player.h"
+#endif
 
 namespace {
 
@@ -51,8 +56,32 @@ input[type=range]{width:100%;} input[type=color]{width:100%;height:44px;border:n
         html += "</button>";
     }
 
+    html += "</div>";
+
+#ifdef AUDIO_RX_GPIO
+    // Tracks are numbered rather than named: the firmware knows how many
+    // /mp3/NNNN.mp3 files exist but nothing about what is in them, since the
+    // module never reports back. TRACKS.txt on the card is the key.
+    html += R"HTML(<h2>Audio</h2>
+<p style="color:#888;font-size:0.85rem;margin-top:-0.5rem">Track numbers match /mp3/NNNN.mp3 on the card; see TRACKS.txt.</p>
+<div class="grid" id="tracks">)HTML";
+    uint16_t tracks = AudioPlayer::trackCount();
+    for (uint16_t t = 1; t <= tracks; t++) {
+        html += "<button onclick=\"playTrack(";
+        html += String(t);
+        html += ")\">";
+        html += String(t);
+        html += "</button>";
+    }
     html += R"HTML(</div>
-<h2>Accent Color</h2>
+<h2>Volume</h2>
+<input type="range" id="volume" min="0" max="30" value=")HTML";
+    html += String(AudioPlayer::volume());
+    html += R"HTML(" onchange="setVolume(this.value)">
+)HTML";
+#endif
+
+    html += R"HTML(<h2>Accent Color</h2>
 <p style="color:#888;font-size:0.85rem;margin-top:-0.5rem">Applies to whichever pattern is running (except the rainbow ones).</p>
 <input type="color" id="colorPicker" value="#ffa028" onchange="setColor(this.value)">
 <h2>Brightness</h2>
@@ -61,9 +90,20 @@ input[type=range]{width:100%;} input[type=color]{width:100%;height:44px;border:n
 function selectEffect(i){fetch('/api/effect?index='+i).then(refreshStatus);}
 function setColor(hex){fetch('/api/color?hex='+hex.substring(1)).then(refreshStatus);}
 function setBrightness(v){fetch('/api/brightness?value='+v).then(refreshStatus);}
+function playTrack(t){fetch('/api/play?track='+t).then(refreshStatus);}
+function setVolume(v){fetch('/api/volume?value='+v).then(refreshStatus);}
 function refreshStatus(){
   fetch('/api/status').then(r=>r.json()).then(d=>{
-    document.getElementById('status').textContent = 'Current: ' + d.effect + ' — Brightness: ' + d.brightness;
+    var s = 'Current: ' + d.effect + ' — Brightness: ' + d.brightness;
+    if (d.tracks > 0) {
+      s += ' — Volume: ' + d.volume;
+      s += d.track > 0 ? ' — Track ' + d.track : ' — no track played yet';
+    }
+    document.getElementById('status').textContent = s;
+    // Reflect changes made on the gamepad, so the two controls agree rather
+    // than each showing its own last action.
+    var vol = document.getElementById('volume');
+    if (vol && document.activeElement !== vol) { vol.value = d.volume; }
   });
 }
 refreshStatus();
@@ -116,11 +156,51 @@ void handleSetBrightness() {
     sServer.send(200, "text/plain", "OK");
 }
 
+#ifdef AUDIO_RX_GPIO
+void handlePlay() {
+    if (!sServer.hasArg("track")) {
+        sServer.send(400, "text/plain", "missing track");
+        return;
+    }
+    int track = sServer.arg("track").toInt();
+    if (track < 1 || track > static_cast<int>(AudioPlayer::trackCount())) {
+        sServer.send(400, "text/plain", "track out of range");
+        return;
+    }
+    AudioPlayer::play(static_cast<uint16_t>(track));
+    sServer.send(200, "text/plain", "OK");
+}
+
+void handleSetVolume() {
+    if (!sServer.hasArg("value")) {
+        sServer.send(400, "text/plain", "missing value");
+        return;
+    }
+    int value = sServer.arg("value").toInt();
+    if (value < 0) value = 0;
+    if (value > 30) value = 30;
+    AudioPlayer::setVolume(static_cast<uint8_t>(value));
+    sServer.send(200, "text/plain", "OK");
+}
+#endif
+
 void handleStatus() {
     String json = "{\"effect\":\"";
     json += LightEffects::currentName();
     json += "\",\"brightness\":";
     json += String(LedController::brightness());
+#ifdef AUDIO_RX_GPIO
+    json += ",\"volume\":";
+    json += String(AudioPlayer::volume());
+    json += ",\"track\":";
+    json += String(AudioPlayer::currentTrack());
+    json += ",\"tracks\":";
+    json += String(AudioPlayer::trackCount());
+#else
+    // Always present so the page's JavaScript needs no board-specific
+    // branching — it just sees zero tracks and hides the audio readout.
+    json += ",\"volume\":0,\"track\":0,\"tracks\":0";
+#endif
     json += "}";
     sServer.send(200, "application/json", json);
 }
@@ -133,6 +213,10 @@ void WebUI::begin() {
     sServer.on("/api/color", handleSetColor);
     sServer.on("/api/brightness", handleSetBrightness);
     sServer.on("/api/status", handleStatus);
+#ifdef AUDIO_RX_GPIO
+    sServer.on("/api/play", handlePlay);
+    sServer.on("/api/volume", handleSetVolume);
+#endif
 
     // Make sure the radio really is down rather than relying on it never
     // having been brought up.

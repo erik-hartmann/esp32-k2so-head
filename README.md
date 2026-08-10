@@ -32,8 +32,9 @@ debugging time are written down rather than quietly fixed.
   controller is away: weighted random saccades, occasional long stares, and
   natural blinking
 - **Per-side dimming** on the triggers, so each eye responds independently
-- **A web UI** over a soft AP for patterns, color and brightness — off by
-  default, toggled from the gamepad
+- **A web UI** over a soft AP for patterns, color, brightness, volume and
+  tap-to-play access to every audio clip — off by default, toggled from the
+  board's admin button
 - **Audio** from a DFPlayer Mini, driven by a non-blocking driver that never
   stalls the control loop
 

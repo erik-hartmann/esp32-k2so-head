@@ -105,9 +105,6 @@ uint32_t sAdminPressedAtMs = 0;
 bool sAdminHoldFired = false;
 uint32_t sLastYPressMs = 0;
 uint32_t sLastVolumeChangeMs = 0;
-// 0 means "nothing selected yet", so the first Right press starts at track 1
-// and the first Left press wraps to the last track.
-uint16_t sCurrentAudioTrack = 0;
 uint8_t sBrightnessBeforeOff = 200;
 
 // Two quick flashes confirming an admin toggle actually landed: green when
@@ -275,23 +272,17 @@ void loop() {
             // stutter. A change made while something is already playing is
             // audible immediately anyway — the module applies volume live.
             sVolumeAdjusted = false;
-            if (sCurrentAudioTrack == 0) {
-                sCurrentAudioTrack = 1;
-            }
-            AudioPlayer::play(sCurrentAudioTrack);
+            AudioPlayer::replay();
         }
 
         // D-pad Left/Right step through the clips and play each on selection,
         // wrapping at both ends. Edge-triggered so holding a direction doesn't
         // restart a clip every frame.
-        const uint16_t trackCount = AudioPlayer::trackCount();
         if (gp.dpadRight && !sDpadRightWasPressed) {
-            sCurrentAudioTrack = (sCurrentAudioTrack % trackCount) + 1;
-            AudioPlayer::play(sCurrentAudioTrack);
+            AudioPlayer::playNext();
         }
         if (gp.dpadLeft && !sDpadLeftWasPressed) {
-            sCurrentAudioTrack = (sCurrentAudioTrack <= 1) ? trackCount : sCurrentAudioTrack - 1;
-            AudioPlayer::play(sCurrentAudioTrack);
+            AudioPlayer::playPrevious();
         }
         sDpadRightWasPressed = gp.dpadRight;
         sDpadLeftWasPressed = gp.dpadLeft;
@@ -300,12 +291,7 @@ void loop() {
         // cannot do — Left then Right would land you back on the same track
         // but play its neighbour on the way.
         if (gp.start && !sStartWasPressed) {
-            // Nothing stepped to yet, so treat the first press as selecting
-            // track 1 rather than doing nothing at all.
-            if (sCurrentAudioTrack == 0) {
-                sCurrentAudioTrack = 1;
-            }
-            AudioPlayer::play(sCurrentAudioTrack);
+            AudioPlayer::replay();
         }
         sStartWasPressed = gp.start;
 #endif

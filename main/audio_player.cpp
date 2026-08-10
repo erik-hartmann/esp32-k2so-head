@@ -27,6 +27,7 @@ HardwareSerial sSerial(2);  // UART2; UART0 is Bluepad32's console
 uint32_t sReadyAtMs = 0;
 bool sInitSent = false;
 uint8_t sVolume = 20;
+uint16_t sCurrentTrack = 0;  // 0 = nothing played yet
 
 void sendCommand(uint8_t cmd, uint16_t param) {
     uint8_t packet[10];
@@ -87,6 +88,33 @@ uint8_t AudioPlayer::volume() {
     return sVolume;
 }
 
+uint16_t AudioPlayer::currentTrack() {
+    return sCurrentTrack;
+}
+
+void AudioPlayer::playNext() {
+    uint16_t count = trackCount();
+    if (count == 0) {
+        return;
+    }
+    AudioPlayer::play((sCurrentTrack % count) + 1);
+}
+
+void AudioPlayer::playPrevious() {
+    uint16_t count = trackCount();
+    if (count == 0) {
+        return;
+    }
+    AudioPlayer::play(sCurrentTrack <= 1 ? count : sCurrentTrack - 1);
+}
+
+void AudioPlayer::replay() {
+    if (trackCount() == 0) {
+        return;
+    }
+    AudioPlayer::play(sCurrentTrack == 0 ? 1 : sCurrentTrack);
+}
+
 uint16_t AudioPlayer::trackCount() {
     // Fixed, not discovered. The DFPlayer *can* report its file count —
     // command 0x48 — but the answer comes back on the module's TX pin, and
@@ -100,11 +128,18 @@ uint16_t AudioPlayer::trackCount() {
     // match the number of /mp3/NNNN.mp3 files on the card. Asking for a track
     // above the count is harmless — the module simply ignores it — but the
     // press looks broken, because there is no reply to tell us it failed.
+#ifdef AUDIO_TRACK_COUNT
     return AUDIO_TRACK_COUNT;
+#else
+    // No audio configured for this board. Returning 0 rather than guessing a
+    // count keeps the step/replay helpers above from dividing by it.
+    return 0;
+#endif
 }
 
 void AudioPlayer::play(uint16_t track) {
     ensureInitialized();
+    sCurrentTrack = track;
     sendCommand(kCmdPlayMp3Folder, track);
     Console.printf("Audio: play /mp3/%04u.mp3\n", track);
 }
