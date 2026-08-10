@@ -82,6 +82,23 @@ Close the serial monitor before flashing, or the port will be busy. And use a
 **data** USB cable — a charge-only cable powers the board and looks entirely
 normal but never enumerates a COM port.
 
+### On Windows: set a UTF-8 stdio encoding
+
+```bash
+PYTHONIOENCODING=utf-8 python -m platformio run -e esp32-devkitc -t upload
+```
+
+Without it, the upload can **hang indefinitely** partway through. esptool draws
+its progress bar with `█` and `░`, which the default cp1252 console encoding
+cannot represent. PlatformIO's output-reader thread dies on the
+`UnicodeEncodeError`, esptool's stdout pipe fills with nobody draining it, and
+esptool blocks forever writing into it.
+
+It looks exactly like a hardware fault — no output, no error, no progress, and
+the process sitting at near-zero CPU — which sends you hunting for a bad cable
+or a board that will not enter bootloader mode. It is neither. If a flash sits
+still for more than a couple of minutes, this is the first thing to check.
+
 ## Supported boards
 
 | Environment | Board |
