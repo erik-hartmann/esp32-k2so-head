@@ -75,3 +75,8 @@ bool GamepadInput::update() {
 const GamepadState& GamepadInput::state() {
     return sState;
 }
+
+void GamepadInput::setDiscoverable(bool enabled) {
+    BP32.enableNewBluetoothConnections(enabled);
+    Console.printf("Bluetooth scanning %s\n", enabled ? "resumed" : "paused (freeing the radio for WiFi)");
+}

@@ -52,4 +52,17 @@ bool update();
 // Latest known state of the first connected gamepad.
 const GamepadState& state();
 
+// Stops or resumes scanning for new controllers.
+//
+// This matters far more than it sounds. With no controller paired, Bluepad32
+// scans continuously, and a scan hops across the band rather than waking on a
+// scheduled interval — so it occupies the shared 2.4 GHz radio more of the
+// time than an established connection does. WiFi has to fit in the gaps, and
+// what breaks first is exactly the traffic that cannot tolerate loss: the
+// handful of DHCP packets a client needs before it has an address at all.
+//
+// Call with false before bringing WiFi up, true after taking it down.
+// Controllers already connected stay connected either way.
+void setDiscoverable(bool enabled);
+
 }  // namespace GamepadInput

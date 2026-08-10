@@ -354,7 +354,12 @@ void loop() {
                 // is about to take down.
                 OtaService::stop();
                 WebUI::stop();
+                GamepadInput::setDiscoverable(true);
             } else {
+                // Before WiFi, not after: a continuous Bluetooth scan starves
+                // the shared radio badly enough that a client can associate
+                // but never complete DHCP.
+                GamepadInput::setDiscoverable(false);
                 WebUI::start();
                 // Only after the AP is actually up — begin() binds a socket
                 // and there is no interface to bind to before this point.
