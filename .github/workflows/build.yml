@@ -1,0 +1,63 @@
+# Builds the way this project is actually built.
+#
+# The workflow this replaced came from the Bluepad32 template and ran
+# `idf.py build` against the release-v5.4 *branch*. Two problems with that
+# here. First, a branch is a moving target: it drifted until IDF defined
+# adc_continuous_data_t, which arduino-esp32 also defines at the commit this
+# repo pins, and the build broke without anything in the repo changing.
+# Second, this is a PlatformIO project -- BOARD_CONFIG_HEADER is set per
+# environment in platformio.ini, so a bare idf.py build hits the deliberate
+# #error in board_config.h regardless of toolchain version.
+#
+# Building through PlatformIO pins the toolchain the same way a local build
+# does, so CI and a developer's machine fail and pass together.
+
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      # One board failing should not hide the state of the others.
+      fail-fast: false
+      matrix:
+        environment:
+          - esp32-devkitc
+          - esp32dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # components/arduino is a submodule; without it nothing compiles.
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache PlatformIO toolchains
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio/.cache
+            ~/.platformio/packages
+            ~/.platformio/platforms
+          # Keyed on platformio.ini, since that pins the platform archive.
+          key: pio-${{ runner.os }}-${{ hashFiles('platformio.ini') }}
+          restore-keys: pio-${{ runner.os }}-
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio
+
+      - name: Build ${{ matrix.environment }}
+        run: pio run -e ${{ matrix.environment }}
