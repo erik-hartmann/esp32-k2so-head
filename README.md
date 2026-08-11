@@ -40,19 +40,11 @@ debugging time are written down rather than quietly fixed.
 
 ## Controls
 
-| Input | Action |
-| ----- | ------ |
-| Left stick | Accent color hue (centred = the palette default) |
-| Right stick | Eye pan and tilt |
-| LT / RT | Dim the left / right eye independently |
-| L1 / R1 | Previous / next lighting pattern |
-| A / B | Brightness down / up, while held |
-| X | Lights off and on, remembering brightness; also parks idle motion |
-| Y | Step the default accent color through the palette |
-| Y, double-clicked | Pin the current color as the default, until reboot |
-| D-pad Up / Down | Audio volume up / down, repeating while held; replays the current clip on release |
-| D-pad Left / Right | Step through the audio clips, playing each as selected |
-| Menu | Replay the currently selected clip |
+![Gamepad control map: LT and RT dim the left and right eye; LB and RB step
+lighting patterns; the left stick steers accent colour and the right stick pans
+and tilts the eyes; the D-pad handles audio volume and clip selection; Y steps
+the palette and double-clicks to pin a colour; X toggles the lights; A and B
+adjust brightness; Menu replays the current clip](docs/controls.svg)
 
 The WiFi access point and web UI are **not** on the gamepad. Hold the board's
 admin button — GPIO0, the DevKitC's on-board BOOT button — for one second to
@@ -60,7 +52,9 @@ toggle them. Bringing up an access point is a setup action rather than a
 performance one, and it needs to work when no controller is paired.
 
 The controller must be a **Bluetooth** Xbox model (2016 or later). The 2013
-controller uses a proprietary radio and will not pair.
+controller uses a proprietary radio and will not pair. Any pad Bluepad32
+recognises works — PlayStation, Switch Pro and 8BitDo included — though the
+button names above follow the Xbox layout.
 
 ## Hardware
 

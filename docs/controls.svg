@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520" role="img" aria-labelledby="title desc">
+<title id="title">Gamepad control mapping for the K-2SO head</title>
+<desc id="desc">A Bluetooth gamepad with each control labelled. Left trigger dims the left eye and right trigger dims the right eye. Left bumper selects the previous lighting pattern, right bumper the next. The left stick steers the accent colour hue. The right stick pans and tilts the eyes. D-pad up and down change audio volume, replaying the current clip on release; D-pad left and right step through the audio clips, playing each as it is selected. Y steps the default accent colour through the palette, and double-clicking Y pins the current colour until reboot. X switches the lights off and on, remembering brightness, and parks the idle eye motion. B raises brightness while held and A lowers it. The Menu button replays the currently selected clip. The WiFi access point and web UI are not on the gamepad at all: they are toggled by holding the board's own BOOT button for one second.</desc>
+
+<style>
+  .bg   { fill: #ffffff; }
+  .pad  { fill: #eaeef2; stroke: #57606a; }
+  .ctl  { fill: #ffffff; stroke: #57606a; }
+  .ctl2 { fill: #d0d7de; stroke: #57606a; }
+  .lead { stroke: #8c959f; fill: none; }
+  .t1   { fill: #1f2328; font: 600 13px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .t2   { fill: #57606a; font: 400 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .tb   { fill: #1f2328; font: 700 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .hd   { fill: #1f2328; font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .note { fill: #57606a; font: 400 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .rule { stroke: #d0d7de; }
+  @media (prefers-color-scheme: dark) {
+    .bg   { fill: #0d1117; }
+    .pad  { fill: #21262d; stroke: #8b949e; }
+    .ctl  { fill: #0d1117; stroke: #8b949e; }
+    .ctl2 { fill: #30363d; stroke: #8b949e; }
+    .lead { stroke: #6e7681; }
+    .t1   { fill: #e6edf3; }
+    .t2   { fill: #9198a1; }
+    .tb   { fill: #e6edf3; }
+    .hd   { fill: #e6edf3; }
+    .note { fill: #9198a1; }
+    .rule { stroke: #30363d; }
+  }
+</style>
+
+<rect class="bg" x="0" y="0" width="900" height="520"/>
+<text class="hd" x="450" y="30" text-anchor="middle">Gamepad controls</text>
+
+<path class="pad" stroke-width="1.6" d="M 340 215 C 400 198, 500 198, 560 215 C 600 226, 618 250, 618 280 C 618 340, 596 395, 560 418 C 535 434, 512 426, 502 398 C 490 362, 472 350, 450 350 C 428 350, 410 362, 398 398 C 388 426, 365 434, 340 418 C 304 395, 282 340, 282 280 C 282 250, 300 226, 340 215 Z"/>
+
+<rect class="ctl2" x="322" y="150" width="50" height="20" rx="8" stroke-width="1.4"/>
+<rect class="ctl2" x="528" y="150" width="50" height="20" rx="8" stroke-width="1.4"/>
+<text class="tb" x="347" y="165" text-anchor="middle">LT</text>
+<text class="tb" x="553" y="165" text-anchor="middle">RT</text>
+
+<rect class="ctl2" x="316" y="178" width="62" height="16" rx="7" stroke-width="1.4"/>
+<rect class="ctl2" x="522" y="178" width="62" height="16" rx="7" stroke-width="1.4"/>
+<text class="tb" x="347" y="191" text-anchor="middle">LB</text>
+<text class="tb" x="553" y="191" text-anchor="middle">RB</text>
+
+<circle class="ctl2" cx="352" cy="262" r="27" stroke-width="1.6"/>
+<circle class="ctl" cx="352" cy="262" r="15" stroke-width="1.4"/>
+
+<circle class="ctl2" cx="497" cy="345" r="27" stroke-width="1.6"/>
+<circle class="ctl" cx="497" cy="345" r="15" stroke-width="1.4"/>
+
+<path class="ctl2" stroke-width="1.5" d="M 396 322 h 16 v -16 h 16 v 16 h 16 v 16 h -16 v 16 h -16 v -16 h -16 z"/>
+
+<circle class="ctl" cx="548" cy="236" r="14" stroke-width="1.4"/>
+<circle class="ctl" cx="522" cy="262" r="14" stroke-width="1.4"/>
+<circle class="ctl" cx="574" cy="262" r="14" stroke-width="1.4"/>
+<circle class="ctl" cx="548" cy="288" r="14" stroke-width="1.4"/>
+<text class="tb" x="548" y="241" text-anchor="middle">Y</text>
+<text class="tb" x="522" y="267" text-anchor="middle">X</text>
+<text class="tb" x="574" y="267" text-anchor="middle">B</text>
+<text class="tb" x="548" y="293" text-anchor="middle">A</text>
+
+<circle class="ctl" cx="424" cy="252" r="9" stroke-width="1.3"/>
+<circle class="ctl" cx="476" cy="252" r="9" stroke-width="1.3"/>
+<text class="t2" x="424" y="236" text-anchor="middle" font-size="9">View</text>
+<text class="t2" x="476" y="236" text-anchor="middle" font-size="9">Menu</text>
+
+<g class="lead" stroke-width="1.2">
+  <path d="M 322 160 H 250"/>
+  <path d="M 316 186 H 250"/>
+  <path d="M 325 262 H 250"/>
+  <path d="M 396 314 C 350 302, 280 302, 250 310"/>
+  <path d="M 396 346 C 350 358, 280 358, 250 366"/>
+  <path d="M 578 160 H 650"/>
+  <path d="M 584 186 H 650"/>
+  <path d="M 486 244 C 500 150, 596 120, 650 120"/>
+  <path d="M 590 262 H 650"/>
+  <path d="M 524 345 C 566 398, 612 404, 650 404"/>
+</g>
+
+<text class="t1" x="242" y="156" text-anchor="end">LT</text>
+<text class="t2" x="242" y="172" text-anchor="end">dim the left eye</text>
+<text class="t1" x="242" y="188" text-anchor="end">LB</text>
+<text class="t2" x="242" y="204" text-anchor="end">previous pattern</text>
+<text class="t1" x="242" y="258" text-anchor="end">Left stick</text>
+<text class="t2" x="242" y="274" text-anchor="end">accent colour hue</text>
+<text class="t1" x="242" y="306" text-anchor="end">D-pad up / down</text>
+<text class="t2" x="242" y="322" text-anchor="end">volume; replays on release</text>
+<text class="t1" x="242" y="362" text-anchor="end">D-pad left / right</text>
+<text class="t2" x="242" y="378" text-anchor="end">step through audio clips</text>
+
+<text class="t1" x="658" y="116" text-anchor="start">Menu</text>
+<text class="t2" x="658" y="132" text-anchor="start">replay the current clip</text>
+<text class="t1" x="658" y="156" text-anchor="start">RT</text>
+<text class="t2" x="658" y="172" text-anchor="start">dim the right eye</text>
+<text class="t1" x="658" y="188" text-anchor="start">RB</text>
+<text class="t2" x="658" y="204" text-anchor="start">next pattern</text>
+
+<text class="t1" x="658" y="232" text-anchor="start">Face buttons</text>
+<text class="t2" x="658" y="250" text-anchor="start">Y &#8212; step palette; double-click pins it</text>
+<text class="t2" x="658" y="268" text-anchor="start">X &#8212; lights off / on, parks idle</text>
+<text class="t2" x="658" y="286" text-anchor="start">B &#8212; brightness up, while held</text>
+<text class="t2" x="658" y="304" text-anchor="start">A &#8212; brightness down, while held</text>
+
+<text class="t1" x="658" y="400" text-anchor="start">Right stick</text>
+<text class="t2" x="658" y="416" text-anchor="start">eye pan and tilt</text>
+
+<line class="rule" x1="60" y1="452" x2="840" y2="452" stroke-width="1"/>
+<text class="note" x="450" y="474" text-anchor="middle">The WiFi access point and web UI are not on the gamepad.</text>
+<text class="note" x="450" y="492" text-anchor="middle">Hold the board's own BOOT button for one second to toggle them.</text>
+</svg>
