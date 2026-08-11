@@ -80,6 +80,10 @@ bool sBlinking = false;
 uint32_t sIdleResumeAtMs = 0;
 bool sIdleEnabled = true;
 
+// Seeded from the board config; adjustable at runtime for calibration.
+float sPanTrim = EYE_PAN_TRIM_DEG;
+float sTiltTrim = EYE_TILT_TRIM_DEG;
+
 float clampf(float v, float lo, float hi) {
     return v < lo ? lo : (v > hi ? hi : v);
 }
@@ -167,6 +171,22 @@ void EyeMotion::begin() {
     scheduleBlink();
 }
 
+void EyeMotion::setPanTrim(float degrees) {
+    sPanTrim = clampf(degrees, -45.0f, 45.0f);
+}
+
+void EyeMotion::setTiltTrim(float degrees) {
+    sTiltTrim = clampf(degrees, -45.0f, 45.0f);
+}
+
+float EyeMotion::panTrim() {
+    return sPanTrim;
+}
+
+float EyeMotion::tiltTrim() {
+    return sTiltTrim;
+}
+
 void EyeMotion::setIdleEnabled(bool enabled) {
     if (enabled == sIdleEnabled) {
         return;
@@ -230,6 +250,6 @@ void EyeMotion::update(const GamepadState& gamepad) {
     // hops, centre pull, easing, the stick range -- keeps reasoning in clean
     // 0..180 with 90 as centre, and the mechanical offset of this particular
     // build is corrected once, on the way out to the servos.
-    ServoController::setAngle(kPanChannel, clampf(sPan + EYE_PAN_TRIM_DEG, 0.0f, 180.0f));
-    ServoController::setAngle(kTiltChannel, clampf(sTilt + EYE_TILT_TRIM_DEG, 0.0f, 180.0f));
+    ServoController::setAngle(kPanChannel, clampf(sPan + sPanTrim, 0.0f, 180.0f));
+    ServoController::setAngle(kTiltChannel, clampf(sTilt + sTiltTrim, 0.0f, 180.0f));
 }

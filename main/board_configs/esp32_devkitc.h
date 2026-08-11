@@ -30,7 +30,7 @@
 // put that many degrees here. If they move the wrong way, flip the sign.
 // Keep it small; the trim shifts the whole range, so a large value costs
 // travel at the far end once the result clamps at 0/180.
-#define EYE_PAN_TRIM_DEG -10.0f
+#define EYE_PAN_TRIM_DEG -15.0f
 #define EYE_TILT_TRIM_DEG 0.0f
 
 // DFPlayer Mini on UART2. AUDIO_RX is the ESP32 pin receiving the

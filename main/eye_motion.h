@@ -20,6 +20,20 @@
 
 namespace EyeMotion {
 
+// Live centring trim, in degrees, added to every commanded angle.
+//
+// Seeded from EYE_PAN_TRIM_DEG / EYE_TILT_TRIM_DEG in the board config and
+// adjustable at runtime, because calibrating this by recompiling is painful:
+// a linkage is rarely 1:1, so the servo degrees needed are not the eye
+// degrees observed, and converging by guesswork costs a flash per attempt.
+//
+// Runtime changes are NOT persisted. Once a value looks right, put it in the
+// board config so it survives a reboot.
+void setPanTrim(float degrees);
+void setTiltTrim(float degrees);
+float panTrim();
+float tiltTrim();
+
 void begin();
 
 // Call once per loop() tick. While the right stick is being moved it sets

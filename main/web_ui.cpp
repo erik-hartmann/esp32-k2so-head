@@ -13,6 +13,10 @@
 #include "audio_player.h"
 #endif
 
+#ifdef I2C_SDA_GPIO
+#include "eye_motion.h"
+#endif
+
 namespace {
 
 // Change these if you want a different network name/password. WPA2
@@ -81,6 +85,23 @@ input[type=range]{width:100%;} input[type=color]{width:100%;height:44px;border:n
 )HTML";
 #endif
 
+#ifdef I2C_SDA_GPIO
+    // Calibration, not a control you use day to day. Changes take effect
+    // immediately but are not persisted -- once a value looks right it needs
+    // copying into EYE_*_TRIM_DEG in the board config to survive a reboot.
+    html += R"HTML(<h2>Eye Centring Trim</h2>
+<p style="color:#888;font-size:0.85rem;margin-top:-0.5rem">Degrees. Live, but not saved &mdash; copy the final value into the board config.</p>
+<label style="font-size:0.85rem;color:#aaa">Pan <span id="panVal"></span></label>
+<input type="range" id="panTrim" min="-45" max="45" step="1" value=")HTML";
+    html += String(static_cast<int>(EyeMotion::panTrim()));
+    html += R"HTML(" oninput="setTrim('pan',this.value)">
+<label style="font-size:0.85rem;color:#aaa">Tilt <span id="tiltVal"></span></label>
+<input type="range" id="tiltTrim" min="-45" max="45" step="1" value=")HTML";
+    html += String(static_cast<int>(EyeMotion::tiltTrim()));
+    html += R"HTML(" oninput="setTrim('tilt',this.value)">
+)HTML";
+#endif
+
     html += R"HTML(<h2>Accent Color</h2>
 <p style="color:#888;font-size:0.85rem;margin-top:-0.5rem">Applies to whichever pattern is running (except the rainbow ones).</p>
 <input type="color" id="colorPicker" value="#ffa028" onchange="setColor(this.value)">
@@ -92,6 +113,12 @@ function setColor(hex){fetch('/api/color?hex='+hex.substring(1)).then(refreshSta
 function setBrightness(v){fetch('/api/brightness?value='+v).then(refreshStatus);}
 function playTrack(t){fetch('/api/play?track='+t).then(refreshStatus);}
 function setVolume(v){fetch('/api/volume?value='+v).then(refreshStatus);}
+function setTrim(axis,v){
+  // Labelled from the slider directly rather than waiting for the status
+  // poll, so dragging feels immediate while calibrating.
+  var l=document.getElementById(axis+'Val'); if(l){l.textContent=v+'°';}
+  fetch('/api/eyetrim?'+axis+'='+v);
+}
 function refreshStatus(){
   fetch('/api/status').then(r=>r.json()).then(d=>{
     var s = 'Current: ' + d.effect + ' — Brightness: ' + d.brightness;
@@ -106,6 +133,10 @@ function refreshStatus(){
     if (vol && document.activeElement !== vol) { vol.value = d.volume; }
   });
 }
+['pan','tilt'].forEach(function(a){
+  var s=document.getElementById(a+'Trim'), l=document.getElementById(a+'Val');
+  if(s&&l){l.textContent=s.value+'°';}
+});
 refreshStatus();
 setInterval(refreshStatus, 3000);
 </script>
@@ -184,6 +215,24 @@ void handleSetVolume() {
 }
 #endif
 
+#ifdef I2C_SDA_GPIO
+void handleEyeTrim() {
+    if (sServer.hasArg("pan")) {
+        EyeMotion::setPanTrim(sServer.arg("pan").toFloat());
+    }
+    if (sServer.hasArg("tilt")) {
+        EyeMotion::setTiltTrim(sServer.arg("tilt").toFloat());
+    }
+    // Echo what was actually applied, since the setters clamp.
+    String json = "{\"pan\":";
+    json += String(EyeMotion::panTrim(), 1);
+    json += ",\"tilt\":";
+    json += String(EyeMotion::tiltTrim(), 1);
+    json += "}";
+    sServer.send(200, "application/json", json);
+}
+#endif
+
 void handleStatus() {
     String json = "{\"effect\":\"";
     json += LightEffects::currentName();
@@ -216,6 +265,9 @@ void WebUI::begin() {
 #ifdef AUDIO_RX_GPIO
     sServer.on("/api/play", handlePlay);
     sServer.on("/api/volume", handleSetVolume);
+#endif
+#ifdef I2C_SDA_GPIO
+    sServer.on("/api/eyetrim", handleEyeTrim);
 #endif
 
     // Make sure the radio really is down rather than relying on it never
