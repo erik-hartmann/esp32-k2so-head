@@ -19,6 +19,20 @@
 #define I2C_SDA_GPIO 21
 #define I2C_SCL_GPIO 22
 
+// Eye centring trim, in degrees, added to every commanded angle.
+//
+// A servo horn can only be fitted in whole spline steps, so "mechanically
+// centred" almost never lands exactly on 90 degrees. This corrects that in
+// software instead of fighting the splines. It is a property of this
+// particular build -- reprint the linkages or refit a horn and it changes.
+//
+// To calibrate: let the eyes settle at centre, see how far off they sit, and
+// put that many degrees here. If they move the wrong way, flip the sign.
+// Keep it small; the trim shifts the whole range, so a large value costs
+// travel at the far end once the result clamps at 0/180.
+#define EYE_PAN_TRIM_DEG -10.0f
+#define EYE_TILT_TRIM_DEG 0.0f
+
 // DFPlayer Mini on UART2. AUDIO_RX is the ESP32 pin receiving the
 // DFPlayer's TX, and vice versa — cross them when wiring.
 //

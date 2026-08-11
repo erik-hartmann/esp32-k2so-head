@@ -3,9 +3,18 @@
 #include <Arduino.h>
 #include <Bluepad32.h>
 
+#include "board_config.h"
 #include "esp_random.h"
 #include "led_controller.h"
 #include "servo_controller.h"
+
+// Boards that have not been trimmed sit at a true 90 degrees.
+#ifndef EYE_PAN_TRIM_DEG
+#define EYE_PAN_TRIM_DEG 0.0f
+#endif
+#ifndef EYE_TILT_TRIM_DEG
+#define EYE_TILT_TRIM_DEG 0.0f
+#endif
 
 namespace {
 
@@ -216,6 +225,11 @@ void EyeMotion::update(const GamepadState& gamepad) {
     sPan += (sTargetPan - sPan) * ease;
     sTilt += (sTargetTilt - sTilt) * ease;
 
-    ServoController::setAngle(kPanChannel, sPan);
-    ServoController::setAngle(kTiltChannel, sTilt);
+    // Trim is applied here, at the very last step, rather than folded into
+    // the centre constants or the stick mapping. Everything above -- idle
+    // hops, centre pull, easing, the stick range -- keeps reasoning in clean
+    // 0..180 with 90 as centre, and the mechanical offset of this particular
+    // build is corrected once, on the way out to the servos.
+    ServoController::setAngle(kPanChannel, clampf(sPan + EYE_PAN_TRIM_DEG, 0.0f, 180.0f));
+    ServoController::setAngle(kTiltChannel, clampf(sTilt + EYE_TILT_TRIM_DEG, 0.0f, 180.0f));
 }
