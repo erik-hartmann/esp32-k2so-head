@@ -8,6 +8,10 @@
 #include "led_controller.h"
 #include "servo_controller.h"
 
+#ifdef AUDIO_BUSY_GPIO
+#include "audio_player.h"
+#endif
+
 // Boards that have not been trimmed sit at a true 90 degrees.
 #ifndef EYE_PAN_TRIM_DEG
 #define EYE_PAN_TRIM_DEG 0.0f
@@ -61,6 +65,23 @@ constexpr uint32_t kBlinkClosedMs = 120;
 constexpr uint32_t kBlinkOpenMs = 90;
 constexpr uint32_t kBlinkGapMinMs = 4500;
 constexpr uint32_t kBlinkGapMaxMs = 13000;
+
+// Speech lighting. The eyes rest a little below full so that speaking has
+// somewhere brighter to go — a multiplier cannot exceed 255, so without this
+// headroom "brighter while talking" is not expressible at all. The gap is
+// small enough that the resting level reads as normal on its own.
+constexpr uint8_t kEyeRestLevel = 236;
+constexpr uint8_t kSpeechActiveLevel = 255;
+
+// The dip before a line. Deep enough to be unmistakable against the surge
+// that follows, brief enough to read as the optics drawing power rather than
+// as a fault.
+constexpr uint8_t kSpeechDipLevel = 70;
+
+// How long the dip may last while waiting for the module to start. Covers
+// the DFPlayer's 50-200ms of latency with margin; past this the eyes return
+// to rest, so a command that never produces sound cannot leave them dark.
+constexpr uint32_t kSpeechDipWindowMs = 450;
 
 // Idle also resumes while a controller is still connected, once the right
 // stick has sat centered this long. Threshold is well above resting stick
@@ -128,7 +149,48 @@ void pickIdleTarget() {
     scheduleSaccade();
 }
 
-void updateBlink() {
+#ifdef AUDIO_BUSY_GPIO
+// Returns true and sets `level` when speech owns the eyes, false to let
+// blinking have them.
+//
+// The sequence is: dip on the play command, surge when the module actually
+// starts, hold slightly bright until it stops. The dip is possible only
+// because BUSY reports playback *starting*, not about to start — so the cue
+// comes from our own command, and the module's 50-200ms of startup latency
+// is what makes the dip visible at all.
+bool speechLevel(uint8_t& level) {
+    if (AudioPlayer::isPlaying()) {
+        level = kSpeechActiveLevel;
+        return true;
+    }
+    // Command sent, module not sounding yet: this is the dip. Bounded, so a
+    // module that never answers -- unwired BUSY, dead board, missing file --
+    // leaves the eyes dark for a moment rather than forever.
+    if (AudioPlayer::sinceLastPlayCommand() < kSpeechDipWindowMs) {
+        level = kSpeechDipLevel;
+        return true;
+    }
+    return false;
+}
+#endif
+
+// Owns the eye brightness multiplier. Blinking and speech both want it, so
+// they are resolved here rather than fighting over LedController.
+void updateEyeLevel() {
+#ifdef AUDIO_BUSY_GPIO
+    uint8_t level = 255;
+    if (speechLevel(level)) {
+        // Speech wins outright. A blink mid-sentence reads as a glitch, and
+        // any blink already running is abandoned rather than finished.
+        sBlinking = false;
+        LedController::setBlinkLevel(level);
+        // Hold off the next blink until after the line, so one does not fire
+        // the instant the clip ends.
+        scheduleBlink();
+        return;
+    }
+#endif
+
     if (sBlinking) {
         uint32_t elapsed = millis() - sBlinkStartMs;
         if (elapsed < kBlinkClosedMs) {
@@ -137,13 +199,15 @@ void updateBlink() {
             uint32_t t = elapsed - kBlinkClosedMs;
             LedController::setBlinkLevel(static_cast<uint8_t>(255 * t / kBlinkOpenMs));
         } else {
-            LedController::setBlinkLevel(255);
+            LedController::setBlinkLevel(kEyeRestLevel);
             sBlinking = false;
             scheduleBlink();
         }
     } else if (deadlinePassed(sNextBlinkMs)) {
         sBlinking = true;
         sBlinkStartMs = millis();
+    } else {
+        LedController::setBlinkLevel(kEyeRestLevel);
     }
 }
 
@@ -152,7 +216,7 @@ void updateBlink() {
 void suspendIdle() {
     if (sBlinking) {
         sBlinking = false;
-        LedController::setBlinkLevel(255);
+        LedController::setBlinkLevel(kEyeRestLevel);
     }
     scheduleSaccade();
     scheduleBlink();
@@ -203,7 +267,7 @@ void EyeMotion::setIdleEnabled(bool enabled) {
         // at 0. Leaving it there would mean the lights come back on still
         // dark, since nothing else would ever reset it.
         sBlinking = false;
-        LedController::setBlinkLevel(255);
+        LedController::setBlinkLevel(kEyeRestLevel);
     }
 }
 
@@ -231,7 +295,7 @@ void EyeMotion::update(const GamepadState& gamepad) {
             if (deadlinePassed(sNextSaccadeMs)) {
                 pickIdleTarget();
             }
-            updateBlink();
+            updateEyeLevel();
         }
         ease = kIdleEase;
     } else {

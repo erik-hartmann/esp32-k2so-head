@@ -17,11 +17,26 @@
 
 namespace AudioPlayer {
 
-// rxGpio is the ESP32 pin wired to the DFPlayer's TX; txGpio is the ESP32
-// pin wired to its RX. Does not block — the module needs roughly a second
-// after power-up before it accepts commands, and that wait is handled
-// lazily on the first play() rather than stalling setup().
-void begin(int rxGpio, int txGpio);
+// txGpio is the ESP32 pin wired to the DFPlayer's RX — serial lines cross.
+// busyGpio is the pin wired to the module's BUSY output, or -1 if it is not
+// connected. Does not block: the module needs roughly a second after
+// power-up before it accepts commands, and that wait is handled lazily on
+// the first play() rather than stalling setup().
+void begin(int txGpio, int busyGpio);
+
+// True while a clip is actually sounding, read from the BUSY line.
+//
+// This is the module telling us what it is doing, as opposed to us knowing
+// what we asked for. Without the BUSY pin wired it always returns false,
+// since an unconnected pull-up reads idle.
+bool isPlaying();
+
+// Milliseconds since the last play command was sent, or a large number if
+// none has been. Distinct from isPlaying(): between sending the command and
+// the module actually starting there is 50-200ms where we know a clip is
+// coming but nothing is sounding yet — which is exactly the window the eye
+// lighting uses to dip before a line.
+uint32_t sinceLastPlayCommand();
 
 // 0..30, clamped. The module is loud; 20 is a reasonable starting point.
 void setVolume(uint8_t volume);

@@ -33,14 +33,21 @@
 #define EYE_PAN_TRIM_DEG -15.0f
 #define EYE_TILT_TRIM_DEG 0.0f
 
-// DFPlayer Mini on UART2. AUDIO_RX is the ESP32 pin receiving the
-// DFPlayer's TX, and vice versa — cross them when wiring.
+// DFPlayer Mini on UART2. AUDIO_TX is the ESP32 pin driving the DFPlayer's
+// RX — serial lines cross, so this is the module's *receive* pin.
+//
+// There is no AUDIO_RX. The driver never reads a reply, so a receive pin
+// would do nothing, and GPIO16 is far more useful carrying BUSY.
+//
+// AUDIO_BUSY is the DFPlayer's pin 16, which it pulls LOW while a clip is
+// playing and releases HIGH when idle. Read with an internal pull-up, so an
+// unwired board reads "idle" rather than floating and flickering.
 //
 // GPIO16/17 are free on a WROOM-32. Note they are NOT free on a WROVER,
 // where they're wired to the PSRAM — if this board is ever swapped for a
 // WROVER, move these to e.g. 32/33.
-#define AUDIO_RX_GPIO 16
 #define AUDIO_TX_GPIO 17
+#define AUDIO_BUSY_GPIO 16
 
 // How many /mp3/NNNN.mp3 files are on the card. Must be kept in step with the
 // card by hand: the module can report its own file count, but only over its TX

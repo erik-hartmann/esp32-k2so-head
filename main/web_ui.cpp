@@ -9,7 +9,7 @@
 #include "led_controller.h"
 #include "light_effects.h"
 
-#ifdef AUDIO_RX_GPIO
+#ifdef AUDIO_TX_GPIO
 #include "audio_player.h"
 #endif
 
@@ -62,7 +62,7 @@ input[type=range]{width:100%;} input[type=color]{width:100%;height:44px;border:n
 
     html += "</div>";
 
-#ifdef AUDIO_RX_GPIO
+#ifdef AUDIO_TX_GPIO
     // Tracks are numbered rather than named: the firmware knows how many
     // /mp3/NNNN.mp3 files exist but nothing about what is in them, since the
     // module never reports back. TRACKS.txt on the card is the key.
@@ -187,7 +187,7 @@ void handleSetBrightness() {
     sServer.send(200, "text/plain", "OK");
 }
 
-#ifdef AUDIO_RX_GPIO
+#ifdef AUDIO_TX_GPIO
 void handlePlay() {
     if (!sServer.hasArg("track")) {
         sServer.send(400, "text/plain", "missing track");
@@ -238,7 +238,7 @@ void handleStatus() {
     json += LightEffects::currentName();
     json += "\",\"brightness\":";
     json += String(LedController::brightness());
-#ifdef AUDIO_RX_GPIO
+#ifdef AUDIO_TX_GPIO
     json += ",\"volume\":";
     json += String(AudioPlayer::volume());
     json += ",\"track\":";
@@ -262,7 +262,7 @@ void WebUI::begin() {
     sServer.on("/api/color", handleSetColor);
     sServer.on("/api/brightness", handleSetBrightness);
     sServer.on("/api/status", handleStatus);
-#ifdef AUDIO_RX_GPIO
+#ifdef AUDIO_TX_GPIO
     sServer.on("/api/play", handlePlay);
     sServer.on("/api/volume", handleSetVolume);
 #endif

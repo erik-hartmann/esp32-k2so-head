@@ -24,7 +24,7 @@
 //     run autonomous idle behavior instead — see eye_motion.cpp, which is
 //     also where you'd swap the axes or flip a direction for your linkage.
 //   - D-pad Up / Down: audio volume up/down, repeating while held (if a
-//     DFPlayer is configured — see AUDIO_RX_GPIO in the active
+//     DFPlayer is configured — see AUDIO_TX_GPIO in the active
 //     board_config.h). On release, the selected clip replays at the new level
 //     so it can be judged by ear.
 //   - D-pad Left / Right: step back/forward through the audio clips, playing
@@ -63,7 +63,7 @@
 #include "servo_controller.h"
 #endif
 
-#ifdef AUDIO_RX_GPIO
+#ifdef AUDIO_TX_GPIO
 #include "audio_player.h"
 #endif
 
@@ -163,8 +163,8 @@ void setup() {
                    ADMIN_BUTTON_GPIO, kAdminHoldMs);
 #endif
 
-#ifdef AUDIO_RX_GPIO
-    AudioPlayer::begin(AUDIO_RX_GPIO, AUDIO_TX_GPIO);
+#ifdef AUDIO_TX_GPIO
+    AudioPlayer::begin(AUDIO_TX_GPIO, AUDIO_BUSY_GPIO);
     AudioPlayer::setVolume(20);
 #endif
 
@@ -247,7 +247,7 @@ void loop() {
         }
         sYWasPressed = gp.y;
 
-#ifdef AUDIO_RX_GPIO
+#ifdef AUDIO_TX_GPIO
         // D-pad Up/Down ramp the volume while held. Not edge-triggered: the
         // module's range is 0..30, and stepping once per press would mean
         // thirty presses to cross it.

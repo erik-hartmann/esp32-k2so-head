@@ -28,6 +28,9 @@ uint32_t sReadyAtMs = 0;
 bool sInitSent = false;
 uint8_t sVolume = 20;
 uint16_t sCurrentTrack = 0;  // 0 = nothing played yet
+int sBusyGpio = -1;
+uint32_t sLastPlayCommandMs = 0;
+bool sHasPlayed = false;
 
 void sendCommand(uint8_t cmd, uint16_t param) {
     uint8_t packet[10];
@@ -66,11 +69,23 @@ void ensureInitialized() {
 
 }  // namespace
 
-void AudioPlayer::begin(int rxGpio, int txGpio) {
-    sSerial.begin(kBaud, SERIAL_8N1, rxGpio, txGpio);
+void AudioPlayer::begin(int txGpio, int busyGpio) {
+    // -1 for RX: this driver never reads a reply, so binding a receive pin
+    // would only reserve a GPIO to do nothing.
+    sSerial.begin(kBaud, SERIAL_8N1, -1, txGpio);
     sReadyAtMs = millis() + kStartupDelayMs;
     sInitSent = false;
-    Console.printf("Audio: DFPlayer on UART2 (rx=%d, tx=%d)\n", rxGpio, txGpio);
+
+    sBusyGpio = busyGpio;
+    if (sBusyGpio >= 0) {
+        // Pull-up matters: BUSY is an open output that the module pulls low.
+        // Without it, an unwired pin floats and would read as playback
+        // starting and stopping at random.
+        pinMode(sBusyGpio, INPUT_PULLUP);
+    }
+
+    Console.printf("Audio: DFPlayer on UART2 (tx=%d), busy=%s\n", txGpio,
+                   sBusyGpio >= 0 ? String(sBusyGpio).c_str() : "not wired");
 }
 
 void AudioPlayer::setVolume(uint8_t volume) {
@@ -123,7 +138,7 @@ uint16_t AudioPlayer::trackCount() {
     // stall the loop that also drives the servos and the Bluetooth stack.
     //
     // Making this genuinely dynamic therefore needs hardware, not just code:
-    // a 4th conductor from the DFPlayer's TX (pin 3) to AUDIO_RX_GPIO, plus a
+    // a 4th conductor from the DFPlayer TX (pin 3) to a spare GPIO, plus a
     // non-blocking reader for the 10-byte reply frames. Until then this must
     // match the number of /mp3/NNNN.mp3 files on the card. Asking for a track
     // above the count is harmless — the module simply ignores it — but the
@@ -137,9 +152,25 @@ uint16_t AudioPlayer::trackCount() {
 #endif
 }
 
+bool AudioPlayer::isPlaying() {
+    if (sBusyGpio < 0) {
+        return false;
+    }
+    return digitalRead(sBusyGpio) == LOW;  // active low
+}
+
+uint32_t AudioPlayer::sinceLastPlayCommand() {
+    if (!sHasPlayed) {
+        return UINT32_MAX;
+    }
+    return millis() - sLastPlayCommandMs;
+}
+
 void AudioPlayer::play(uint16_t track) {
     ensureInitialized();
     sCurrentTrack = track;
+    sLastPlayCommandMs = millis();
+    sHasPlayed = true;
     sendCommand(kCmdPlayMp3Folder, track);
     Console.printf("Audio: play /mp3/%04u.mp3\n", track);
 }
