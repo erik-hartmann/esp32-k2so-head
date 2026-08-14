@@ -57,7 +57,15 @@ jobs:
           restore-keys: pio-${{ runner.os }}-
 
       - name: Install PlatformIO
-        run: pip install --upgrade platformio
+        # click is pinned, and the order matters -- it goes after PlatformIO so
+        # the pin wins. click 8.2 changed ParamType.get_metavar() to require a
+        # ctx argument; the esptool bundled with this platform still calls it
+        # with one, and the build dies while generating bootloader.bin with
+        # "get_metavar() missing 1 required positional argument". Nothing to do
+        # with this project's code, and the same pin is needed locally.
+        run: |
+          pip install --upgrade platformio
+          pip install "click==8.1.8"
 
       - name: Build ${{ matrix.environment }}
         run: pio run -e ${{ matrix.environment }}
