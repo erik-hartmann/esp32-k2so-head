@@ -30,7 +30,7 @@ too, because nothing in the source hardcodes a pin.
 | PCA9685 — SDA         | GPIO21         | `I2C_SDA_GPIO`         |
 | PCA9685 — SCL         | GPIO22         | `I2C_SCL_GPIO`         |
 | DFPlayer — RX         | GPIO17         | `AUDIO_TX_GPIO`        |
-| DFPlayer — TX         | GPIO16         | `AUDIO_RX_GPIO` *(reserved, not wired — see below)* |
+| DFPlayer — BUSY       | GPIO16         | `AUDIO_BUSY_GPIO`      |
 
 **If you use a WROVER module instead of a WROOM,** GPIO16/17 are wired to the
 PSRAM and are *not* free. Move the DFPlayer to GPIO32/33 and update the board
@@ -83,8 +83,8 @@ board's USB/VIN diode arrangement does.
 > A real failure from this project: an early firmware started a WiFi soft-AP at
 > boot, and over USB alone that pushed the board into brownout — the on-board
 > red LED blinked instead of holding solid. The AP now starts *off* and is
-> toggled by D-pad Up, which fixed it. If you make the AP always-on, redo the
-> current budget.
+> toggled by the board's admin button, which fixed it. If you make the AP
+> always-on, redo the current budget.
 
 ---
 
@@ -268,7 +268,8 @@ junction needs one bulk reservoir rather than one per feed point.
 | ------------- | --------- | ---------- | ---------- | -------- | ------------ |
 | LED cluster A | G4–G6     | J4 → R+    | J5 → R−    | E6↔F6    | B6 → GPIO25  |
 | LED cluster B | G8–G10    | J8 → R+    | J9 → R−    | E10↔F10  | B10 → GPIO26 |
-| DFPlayer Mini | G12–G14   | J12 → R+   | J13 → R−   | E14↔F14  | B14 → GPIO17 |
+| DFPlayer Mini | G12–G15   | J12 → R+   | J13 → R−   | E14↔F14  | B14 → GPIO17 |
+| DFPlayer BUSY | *(4th pin)* | —          | —          | E15↔F15 link | B15 → GPIO16 |
 
 GPIO17 is the ESP32's **TX** and lands on the DFPlayer's **RX** — serial
 lines cross. Wiring TX to TX fails silently, with no error to point at it.
@@ -281,8 +282,11 @@ build used **2-pin blocks mounted vertically and wired on one side only**:
 
 - Rotate the block 90° so its two pins span two *rows* in column B rather than
   two columns in one row.
-- **Put the dead pin above**, so each block occupies **B5+B6, B9+B10 and
-  B13+B14** with only the lower screw wired.
+- **Put the dead pin above**, so the LED blocks occupy **B5+B6** and
+  **B9+B10** with only the lower screw wired.
+- The DFPlayer terminal is the exception: at **B14+B15** *both* pins are
+  live, B14 carrying the signal to GPIO17 and B15 carrying BUSY to GPIO16.
+  Adding BUSY put the otherwise-wasted upper pin to work.
 
 This is electrically clean because A–E in each row is a separate node — the
 two pins land on two different nodes, and the block's own pins are not
@@ -342,10 +346,12 @@ Lowest components first, so nothing blocks iron access:
 1. The three 330 Ω resistors (rows 6, 10, 14), bridging the centre channel.
 2. All eight underside jumpers. **Test continuity rail-to-rail now,** before
    anything obstructs the pads.
-3. The three 3-pin JST-XH connectors (G4–G6, G8–G10, G12–G14).
-4. The three GPIO screw terminals (B5+B6, B9+B10, B13+B14), dead pin up.
-5. The five rail screw terminals (rows 1 and 15, both rail pairs).
-6. The 1000 µF capacitor last — **check polarity**, `+` leg to the `+` rail.
+3. The JST-XH connectors: 3-pin at G4–G6 and G8–G10, 4-pin at G12–G15.
+4. The plain wire link at E15↔F15 for BUSY. No resistor.
+5. The GPIO screw terminals: B5+B6 and B9+B10 dead pin up, B14+B15 with
+   both pins live.
+6. The five rail screw terminals (rows 1 and 15, both rail pairs).
+7. The 1000 µF capacitor last — **check polarity**, `+` leg to the `+` rail.
 
 Before applying power the first time:
 
@@ -386,7 +392,7 @@ leaves a high-impedance CMOS input on the noisiest wire bundle in the head.
 
 ## Connecting the DFPlayer Mini
 
-The cable side of the row 12–14 connector. The DFPlayer is a 16-pin module,
+The cable side of the row 12–15 connector. The DFPlayer is a 16-pin module,
 8 per side, and the three pins it needs from this board are **not** adjacent:
 
 ![DFPlayer Mini pinout, with the pins used by this build highlighted](dfplayer-pinout.svg)
@@ -450,17 +456,26 @@ A 16 GB card arrives FAT32 from the factory and needs no formatting. Check
 before reformatting anything — the card in this build already held a photo
 that a reflexive format would have destroyed.
 
-## Why the DFPlayer only needs 3 conductors
+## Why the DFPlayer uses 4 conductors, and not the ones you'd expect
 
 `main/audio_player.cpp` is write-only. It builds 10-byte packets with the ack
 byte set to `0x00` and never reads a reply — deliberately, so a stalled module
 cannot block a loop that is also driving servos and servicing the Bluetooth
-stack. The DFPlayer's TX pin therefore stays unconnected, and a 3-pin
-connector is sufficient.
+stack. **The DFPlayer's TX pin therefore stays unconnected**, and the fourth
+conductor is spent on BUSY instead.
 
-`AUDIO_RX_GPIO 16` is still passed to `Serial2.begin()` and reserved in the
-board config, but nothing reads it. Wanting busy/status feedback later means a
-4-pin connector *and* a firmware change.
+That is a deliberate trade. TX would carry everything — file counts, playback
+state, error codes — but only by adding a reader that can block. BUSY carries
+one bit, needs no protocol at all, and answers the only question the head
+actually asks: *is it speaking right now?* One GPIO read, no parsing, nothing
+to stall.
+
+Which is why GPIO16 is `AUDIO_BUSY_GPIO` rather than a receive pin, and why
+`Serial2.begin()` is passed `-1` for RX. Reserving a pin to do nothing helped
+no one.
+
+If you ever do want queries, GPIO32 and GPIO33 are free — you have not spent
+your last option on this.
 
 ## Appendix — previous incremental PCB (superseded)
 
