@@ -37,6 +37,8 @@ debugging time are written down rather than quietly fixed.
   board's admin button
 - **Audio** from a DFPlayer Mini, driven by a non-blocking driver that never
   stalls the control loop
+- **Eyes that react to speech** — they dip just before a line, surge as it
+  starts, hold brighter while it plays, and never blink mid-sentence
 
 ## Controls
 
@@ -158,6 +160,7 @@ header and one `[env:...]` block**, not edits scattered across the tree.
 | `servo_controller.*` | PCA9685 wrapper with per-channel pulse ranges |
 | `audio_player.*` | Non-blocking DFPlayer Mini driver |
 | `web_ui.*` | Soft AP and HTTP control panel |
+| `ota_service.*` | Over-the-air updates, bound to the AP's lifetime |
 | `sketch.cpp` | Control mapping — where inputs meet behavior |
 
 Gamepad and web input are peers: both call into the same subsystems, so either

@@ -13,9 +13,13 @@ weeks; Part 2 is the version in the head now.
 
 Parts and where to buy them: see [bom.md](bom.md).
 
-> **Status:** complete and verified 2026-08-09. The Part 2 board worked on
-> first power-up; the DFPlayer was added the same day and audio, lights,
-> servos and Bluetooth are all confirmed working together on the finished head.
+> **Status:** built and verified 2026-08-14. Lights, servos, audio, Bluetooth,
+> the WiFi AP and over-the-air updates all confirmed working together, with the
+> eyes reacting to speech through the DFPlayer's BUSY line.
+>
+> This describes the *second* build of the Part 2 board. The first was rebuilt
+> after rework to fit the 4-pin connector lifted a pad on row 12 — see the note
+> at the end of Part 2 before you desolder anything.
 
 ## Pin assignments
 
@@ -360,6 +364,37 @@ Before applying power the first time:
 - [ ] Each connector's 5 V pin reaches `+`, each GND pin reaches `−`
 
 ---
+
+## Rework: assume you will lose a pad
+
+Perfboard tolerates being soldered once. It tolerates being *un*soldered much
+less well, and a multi-pin connector is the worst case — the remaining pins
+hold it in place while you heat one, so the copper cooks for far longer than
+it would on a single joint.
+
+This board is the second build of Part 2. Converting the DFPlayer from a 3-pin
+to a 4-pin connector meant desoldering the original and the screw terminal
+beside it, which lifted a strip on row 12. The symptom was total silence: row
+12 is the module's 5 V feed, so nothing else about the audio path mattered.
+
+If you have to rework anyway:
+
+- **Add fresh solder to every pin first.** Counterintuitive, but it lowers the
+  melting point and keeps all the joints molten together, so the connector
+  comes out in one motion instead of being rocked free over a minute of heat.
+- **Or sacrifice the connector**: cut the plastic body off and pull the pins
+  out one at a time. Far kinder to the pads, and a JST housing is worth less
+  than the board.
+- **Lower the iron temperature and work in short bursts.** A strip that has
+  been cooked once is more fragile than its neighbours.
+- **Verify before rebuilding.** The continuity map — F↔J on each row, B↔E on
+  the other side, plus the resistors — takes five minutes and tells you
+  whether to repair or start again.
+
+A lifted pad is repairable with a jumper to another hole in the same node, or
+by soldering to the connector's own pin leg and running a wire to the rail.
+But if you are early in a build, a fresh board is often faster than trusting
+copper that has already been through it once.
 
 ## Resistors (both stages)
 
